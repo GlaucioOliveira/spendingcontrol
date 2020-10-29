@@ -1,5 +1,6 @@
 package com.goliveira.spendingcontrol;
 
+//Test for the TEam assignment
 import android.os.Bundle;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
