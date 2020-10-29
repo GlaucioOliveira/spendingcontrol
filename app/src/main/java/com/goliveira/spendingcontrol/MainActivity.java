@@ -2,6 +2,7 @@ package com.goliveira.spendingcontrol;
 
 //Test for the TEam assignment
 // William is confirming his repo setup
+// test1
 import android.os.Bundle;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
