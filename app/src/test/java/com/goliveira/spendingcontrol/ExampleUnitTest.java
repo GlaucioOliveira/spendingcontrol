@@ -1,5 +1,8 @@
 package com.goliveira.spendingcontrol;
 
+import junit.framework.TestCase;
+
+import org.junit.Assert;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -14,4 +17,15 @@ public class ExampleUnitTest {
     public void addition_isCorrect() {
         assertEquals(4, 2 + 2);
     }
+
+    @Test
+    public void TestingIncomeGetDescription(){
+        Income income = new Income();
+        String test = "hi";
+
+        income.setDescription(test);
+
+        Assert.assertEquals(income.getDescription(), test);
+    }
+
 }
