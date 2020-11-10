@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "281967850777",
+    "firebase_url": "https://spending-control-app.firebaseio.com",
+    "project_id": "spending-control-app",
+    "storage_bucket": "spending-control-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:281967850777:android:d839b9aeb7f382c7098188",
+        "android_client_info": {
+          "package_name": "com.goliveira.spendingcontrol"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "281967850777-a9rko8t3r9jfg1dh4aekr8qlqc0ukj0f.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDdrmaNWYVerV-b5CVRxvTQDUaOIuhMKCY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "281967850777-a9rko8t3r9jfg1dh4aekr8qlqc0ukj0f.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
