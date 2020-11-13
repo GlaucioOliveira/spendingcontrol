@@ -1,8 +1,5 @@
 package com.goliveira.spendingcontrol;
 
-//Test for the TEam assignment
-// William is confirming his repo setup
-// test1
 import android.os.Bundle;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -14,8 +11,6 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 public class MainActivity extends AppCompatActivity {
-
-    // this branch is for the firebase sync
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
