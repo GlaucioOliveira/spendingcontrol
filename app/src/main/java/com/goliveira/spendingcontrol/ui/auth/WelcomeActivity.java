@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -33,10 +34,10 @@ public class WelcomeActivity extends AppCompatActivity {
 
         signUpButton = findViewById(R.id.welcomeSignUpButton);
         signInButton = findViewById(R.id.welcomeSignInButton);
-/*
+
         signInButton.setVisibility(INVISIBLE);
         signUpButton.setVisibility(INVISIBLE);
-*/
+
         if (mAuth.getCurrentUser() != null) {
             mAuth.getCurrentUser().reload().addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
@@ -52,7 +53,8 @@ public class WelcomeActivity extends AppCompatActivity {
             });
         } else {
             signInButton.setVisibility(VISIBLE);
-            System.out.println("user not available");
+            signUpButton.setVisibility(VISIBLE);
+            Log.d("AUTH-FIREBASE", "user not available");
         }
 
         signUpButton.setOnClickListener(new View.OnClickListener() {
