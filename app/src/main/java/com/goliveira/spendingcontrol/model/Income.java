@@ -1,4 +1,4 @@
-package com.goliveira.spendingcontrol;
+package com.goliveira.spendingcontrol.model;
 
 public class Income {
 
@@ -6,8 +6,15 @@ public class Income {
 
     private int amount;
 
-    public Income() {
+    public Income()
+    {
+        description = "";
+        amount = 0;
+    }
 
+    public Income(String description, int amount) {
+        this.description = description;
+        this.amount = amount;
     }
 
     public String getDescription() {

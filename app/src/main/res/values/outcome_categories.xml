@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="outcome_categories">
+        <item>-- Choose One Category --</item>
+        <item>Lunch</item>
+        <item>Junkie Food</item>
+        <item>Market</item>
+        <item>Clothing</item>
+        <item>Personal</item>
+        <item>Health</item>
+        <item>Tithing</item>
+    </string-array>
+</resources>

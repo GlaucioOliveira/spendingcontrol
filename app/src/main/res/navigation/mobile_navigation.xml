@@ -9,17 +9,36 @@
         android:id="@+id/navigation_home"
         android:name="com.goliveira.spendingcontrol.ui.home.HomeFragment"
         android:label="@string/title_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_navigation_home_to_navigation_income"
+            app:destination="@id/navigation_income"
+            app:popUpTo="@id/navigation_home" />
+        <action
+            android:id="@+id/action_navigation_home_to_navigation_outcome"
+            app:destination="@id/navigation_outcome"
+            app:popUpTo="@id/navigation_home" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_dashboard"
         android:name="com.goliveira.spendingcontrol.ui.dashboard.DashboardFragment"
-        android:label="@string/title_dashboard"
+        android:label="History"
         tools:layout="@layout/fragment_dashboard" />
 
     <fragment
         android:id="@+id/navigation_notifications"
         android:name="com.goliveira.spendingcontrol.ui.notifications.NotificationsFragment"
-        android:label="@string/title_notifications"
+        android:label="Configuration"
         tools:layout="@layout/fragment_notifications" />
+    <fragment
+        android:id="@+id/navigation_income"
+        android:name="com.goliveira.spendingcontrol.ui.income.IncomeFragment"
+        android:label="Add Income"
+        tools:layout="@layout/fragment_income" />
+    <fragment
+        android:id="@+id/navigation_outcome"
+        android:name="com.goliveira.spendingcontrol.ui.outcome.OutcomeFragment"
+        android:label="Add Outcome"
+        tools:layout="@layout/fragment_outcome" />
 </navigation>
