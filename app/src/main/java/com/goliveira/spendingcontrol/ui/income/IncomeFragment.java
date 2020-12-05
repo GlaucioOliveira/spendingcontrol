@@ -22,11 +22,6 @@ import com.goliveira.spendingcontrol.model.Income;
 import java.util.Calendar;
 import java.util.Date;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link IncomeFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class IncomeFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
@@ -90,8 +85,13 @@ public class IncomeFragment extends Fragment {
             public void onClick(View view) {
                 Income newIncome = new Income();
 
-                newIncome.setDescription("oi");
-                newIncome.setAmount(100);
+                EditText txtIncomeAmount = root.findViewById(R.id.txtIncomeAmount);
+                EditText txtIncomeDescription = root.findViewById(R.id.txtIncomeDescription);
+                Spinner cmbIncomeCategory = root.findViewById(R.id.cmbIncomeCategory);
+
+                newIncome.setDescription(txtIncomeDescription.getText().toString());
+                newIncome.setAmount(GetInt(txtIncomeAmount.getText().toString()));
+                newIncome.setCategory(cmbIncomeCategory.getSelectedItem().toString());
 
                 BudgetList.getInstance().budget.add(newIncome);
 
@@ -123,5 +123,9 @@ public class IncomeFragment extends Fragment {
 
         fragment_income_txtDate.setText(currentTime.toString());
         return root;
+    }
+
+    public int GetInt(String s){
+        return Integer.parseInt(s.replaceAll("[\\D]", ""));
     }
 }

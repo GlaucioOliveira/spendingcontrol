@@ -15,7 +15,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.goliveira.spendingcontrol.R;
-import com.goliveira.spendingcontrol.adapter.IncomeAdapter;
+import com.goliveira.spendingcontrol.adapter.ExpenditureAdapter;
+import com.goliveira.spendingcontrol.interfaces.IExpenditure;
 import com.goliveira.spendingcontrol.model.BudgetList;
 import com.goliveira.spendingcontrol.model.Income;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -33,26 +34,13 @@ public class DashboardFragment extends Fragment {
 
         View root = inflater.inflate(R.layout.fragment_dashboard, container, false);
 
-        FloatingActionButton fab =  getActivity().findViewById(R.id.floatingActionButton);
-
-        if(fab != null)
-        {
-            fab.hide();
-        }
-
         RecyclerView listaRegistros = root.findViewById(R.id.listaRegistros);
         listaRegistros.setLayoutManager(new LinearLayoutManager(root.getContext()));
 
-//        ArrayList<Income> dados = new ArrayList<>();
-//
-//        dados.add(new Income("Chicken Fried", 10));
-//        dados.add(new Income("Forbes Magazine - Super Ultra Edition", 8));
-//        dados.add(new Income("Stocks result", 35));
-
-        ArrayList<Income> dados = BudgetList.getInstance().budget;
+        ArrayList<IExpenditure> dados = BudgetList.getInstance().budget;
 
         listaRegistros.setHasFixedSize(true);
-        listaRegistros.setAdapter(new IncomeAdapter(root.getContext(), 3, dados));
+        listaRegistros.setAdapter(new ExpenditureAdapter(root.getContext(), 3, dados));
 
         return root;
     }

@@ -5,7 +5,7 @@ import com.goliveira.spendingcontrol.interfaces.IExpenditure;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
-public class Income implements IExpenditure {
+public class Outcome implements IExpenditure {
 
     private String description;
 
@@ -21,14 +21,14 @@ public class Income implements IExpenditure {
 
     private String category;
 
-    public Income()
+    public Outcome()
     {
         description = "";
         amount = 0;
         category = "";
     }
 
-    public Income(String description, int amount) {
+    public Outcome(String description, int amount) {
         this.description = description;
         this.amount = amount;
     }

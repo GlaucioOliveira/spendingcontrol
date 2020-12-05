@@ -8,22 +8,23 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 import com.goliveira.spendingcontrol.R;
+import com.goliveira.spendingcontrol.interfaces.IExpenditure;
 import com.goliveira.spendingcontrol.model.Income;
 import java.util.ArrayList;
 import java.util.List;
 
-public class IncomeAdapter extends RecyclerView.Adapter<IncomeAdapter.IncomeAdapterViewHolder> {
+public class ExpenditureAdapter extends RecyclerView.Adapter<ExpenditureAdapter.ExpenditureAdapterViewHolder> {
 
-    List<Income> incomes;
+    ArrayList<IExpenditure> expenditures;
 
     // ViewHolders cache the references to the views that will be modified in the adapter.
-    public class IncomeAdapterViewHolder extends RecyclerView.ViewHolder {
+    public class ExpenditureAdapterViewHolder extends RecyclerView.ViewHolder {
 
         TextView listItemNumberView = (TextView) itemView.findViewById(R.id.recycler_view_item_text);
 
 
         // Create a constructor that accepts a View called itemView as a parameter
-        public IncomeAdapterViewHolder(View itemView) {
+        public ExpenditureAdapterViewHolder(View itemView) {
             super(itemView);
             listItemNumberView = (TextView) itemView.findViewById(R.id.recycler_view_item_text);
         }
@@ -33,16 +34,16 @@ public class IncomeAdapter extends RecyclerView.Adapter<IncomeAdapter.IncomeAdap
     private Context context;
 
 
-    public IncomeAdapter(Context context, int numberOfItems, ArrayList<Income> incomes)
+    public ExpenditureAdapter(Context context, int numberOfItems, ArrayList<IExpenditure> expenditures)
     {
         mNumberItems = numberOfItems;
-        this.incomes = incomes;
+        this.expenditures = expenditures;
         this.context = context;
     }
 
 
     @Override
-    public IncomeAdapterViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+    public ExpenditureAdapterViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         Log.v("onCreateViewHolder", "onCreateViewHolder is called !");
         Context context = viewGroup.getContext();
         int layoutIdForListItem = R.layout.recycler_view_item;
@@ -55,27 +56,27 @@ public class IncomeAdapter extends RecyclerView.Adapter<IncomeAdapter.IncomeAdap
         // Set to false, so that the inflated layout will not be
         // immediately attached to its parent viewgroup.
         View view = inflater.inflate(layoutIdForListItem, viewGroup, false);
-        IncomeAdapterViewHolder viewHolder = new IncomeAdapterViewHolder(view);
+        ExpenditureAdapterViewHolder viewHolder = new ExpenditureAdapterViewHolder(view);
 
         return viewHolder;
     }
 
     //onBindViewHolder()
     @Override
-    public void onBindViewHolder(IncomeAdapterViewHolder holder, int position) {
+    public void onBindViewHolder(ExpenditureAdapterViewHolder holder, int position) {
 
         // Get the data model based on position
 
-        Income income = incomes.get(position);
+        IExpenditure expenditure = expenditures.get(position);
         // Set item views based on your views and data model
         TextView textView = holder.listItemNumberView;
-        textView.setText(income.getDescription());
+        textView.setText(expenditure.getRecyclerViewDescription());
     }
 
     //getItemCount() : returns the mNumberItems var
     @Override
     public int getItemCount() {
-        mNumberItems = incomes.size();
+        mNumberItems = expenditures.size();
         return mNumberItems;
     }
 }

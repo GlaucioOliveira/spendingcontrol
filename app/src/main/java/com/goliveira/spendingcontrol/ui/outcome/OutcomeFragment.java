@@ -14,6 +14,9 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
 import com.goliveira.spendingcontrol.R;
+import com.goliveira.spendingcontrol.model.BudgetList;
+import com.goliveira.spendingcontrol.model.Income;
+import com.goliveira.spendingcontrol.model.Outcome;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -83,6 +86,17 @@ public class OutcomeFragment extends Fragment {
         btnAddOutcome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Outcome newOutcome = new Outcome();
+
+                EditText txtOutcomeAmount = root.findViewById(R.id.txtOutcomeAmount);
+                EditText txtOutcomeDescription = root.findViewById(R.id.txtOutcomeDescription);
+                Spinner cmbOutcomeCategory = root.findViewById(R.id.cmbOutcomeCategory);
+
+                newOutcome.setDescription(txtOutcomeDescription.getText().toString());
+                newOutcome.setAmount(GetInt(txtOutcomeAmount.getText().toString()));
+                newOutcome.setCategory(cmbOutcomeCategory.getSelectedItem().toString());
+
+                BudgetList.getInstance().budget.add(newOutcome);
 
                 Navigation.findNavController(view).popBackStack(); //goes to the previous fragment
             }
@@ -106,5 +120,10 @@ public class OutcomeFragment extends Fragment {
         fragment_outcome_txtDate.setText(currentTime.toString());
 
         return root;
+    }
+
+
+    public int GetInt(String s){
+        return Integer.parseInt(s.replaceAll("[\\D]", ""));
     }
 }

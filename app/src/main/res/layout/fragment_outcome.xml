@@ -43,7 +43,7 @@
         android:text="Add Outcome"
         app:icon="@drawable/add_outcome"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextMultiLine2" />
+        app:layout_constraintTop_toBottomOf="@+id/txtOutcomeDescription" />
 
     <Spinner
         android:id="@+id/cmbOutcomeCategory"
@@ -57,7 +57,7 @@
         app:layout_constraintTop_toBottomOf="@+id/fragment_outcome_txtDate" />
 
     <EditText
-        android:id="@+id/editTextTextMultiLine2"
+        android:id="@+id/txtOutcomeDescription"
         android:layout_width="368dp"
         android:layout_height="52dp"
         android:layout_marginTop="28dp"

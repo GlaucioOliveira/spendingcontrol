@@ -1,10 +1,12 @@
 package com.goliveira.spendingcontrol.model;
 
+import com.goliveira.spendingcontrol.interfaces.IExpenditure;
+
 import java.util.ArrayList;
 
 public class BudgetList {
  private static BudgetList instance;
- public ArrayList<Income> budget;
+ public ArrayList<IExpenditure> budget;
 
  public BudgetList(){
      budget = new ArrayList<>();
@@ -14,6 +16,5 @@ public class BudgetList {
     if(instance == null) instance = new BudgetList();
      return instance;
  }
-
 
 }
