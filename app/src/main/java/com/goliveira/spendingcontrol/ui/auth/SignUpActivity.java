@@ -16,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.goliveira.spendingcontrol.R;
+import com.goliveira.spendingcontrol.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -70,6 +71,8 @@ public class SignUpActivity extends AppCompatActivity {
                                             public void onComplete(@NonNull Task<Void> task) {
                                                 if (task.isSuccessful()) {
                                                     Log.d(TAG, "Email sent.");
+                                                    User newUser = new User(user.getUid(),user.getEmail());
+                                                    newUser.save();
                                                     AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
                                                             SignUpActivity.this);
                                                     // set title
@@ -89,6 +92,7 @@ public class SignUpActivity extends AppCompatActivity {
                                                     AlertDialog alertDialog = alertDialogBuilder.create();
                                                     // show it
                                                     alertDialog.show();
+
                                                 }
                                             }
                                         });

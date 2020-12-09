@@ -92,6 +92,7 @@ public class IncomeFragment extends Fragment {
                 newIncome.setDescription(txtIncomeDescription.getText().toString());
                 newIncome.setAmount(GetInt(txtIncomeAmount.getText().toString()));
                 newIncome.setCategory(cmbIncomeCategory.getSelectedItem().toString());
+                newIncome.save();
 
                 BudgetList.getInstance().budget.add(newIncome);
 

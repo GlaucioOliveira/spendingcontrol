@@ -1,4 +1,4 @@
-package com.goliveira.spendingcontrol.ui.outcome;
+package com.goliveira.spendingcontrol.ui.expense;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -15,18 +15,17 @@ import androidx.navigation.Navigation;
 
 import com.goliveira.spendingcontrol.R;
 import com.goliveira.spendingcontrol.model.BudgetList;
-import com.goliveira.spendingcontrol.model.Income;
-import com.goliveira.spendingcontrol.model.Outcome;
+import com.goliveira.spendingcontrol.model.Expense;
 
 import java.util.Calendar;
 import java.util.Date;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link OutcomeFragment#newInstance} factory method to
+ * Use the {@link ExpenseFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class OutcomeFragment extends Fragment {
+public class ExpenseFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -38,7 +37,7 @@ public class OutcomeFragment extends Fragment {
     private String mParam2;
     Button btnAddOutcome;
 
-    public OutcomeFragment() {
+    public ExpenseFragment() {
         // Required empty public constructor
     }
 
@@ -51,8 +50,8 @@ public class OutcomeFragment extends Fragment {
      * @return A new instance of fragment FragmentInput.
      */
     // TODO: Rename and change types and number of parameters
-    public static OutcomeFragment newInstance(String param1, String param2) {
-        OutcomeFragment fragment = new OutcomeFragment();
+    public static ExpenseFragment newInstance(String param1, String param2) {
+        ExpenseFragment fragment = new ExpenseFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -86,17 +85,18 @@ public class OutcomeFragment extends Fragment {
         btnAddOutcome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Outcome newOutcome = new Outcome();
+                Expense newExpense = new Expense();
 
                 EditText txtOutcomeAmount = root.findViewById(R.id.txtOutcomeAmount);
                 EditText txtOutcomeDescription = root.findViewById(R.id.txtOutcomeDescription);
                 Spinner cmbOutcomeCategory = root.findViewById(R.id.cmbOutcomeCategory);
 
-                newOutcome.setDescription(txtOutcomeDescription.getText().toString());
-                newOutcome.setAmount(GetInt(txtOutcomeAmount.getText().toString()));
-                newOutcome.setCategory(cmbOutcomeCategory.getSelectedItem().toString());
+                newExpense.setDescription(txtOutcomeDescription.getText().toString());
+                newExpense.setAmount(GetInt(txtOutcomeAmount.getText().toString()));
+                newExpense.setCategory(cmbOutcomeCategory.getSelectedItem().toString());
 
-                BudgetList.getInstance().budget.add(newOutcome);
+                newExpense.save();
+                BudgetList.getInstance().budget.add(newExpense);
 
                 Navigation.findNavController(view).popBackStack(); //goes to the previous fragment
             }

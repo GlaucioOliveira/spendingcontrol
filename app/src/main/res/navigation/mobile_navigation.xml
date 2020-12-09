@@ -38,7 +38,7 @@
         tools:layout="@layout/fragment_income" />
     <fragment
         android:id="@+id/navigation_outcome"
-        android:name="com.goliveira.spendingcontrol.ui.outcome.OutcomeFragment"
+        android:name="com.goliveira.spendingcontrol.ui.expense.ExpenseFragment"
         android:label="Add Outcome"
         tools:layout="@layout/fragment_outcome" />
 </navigation>
