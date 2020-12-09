@@ -2,6 +2,7 @@ package com.goliveira.spendingcontrol.ui.home;
 
 import android.app.DatePickerDialog;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import android.widget.CalendarView;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
@@ -24,11 +26,13 @@ import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.utils.ColorTemplate;
+import com.goliveira.spendingcontrol.model.Expense;
 import com.goliveira.spendingcontrol.model.Income;
 import com.goliveira.spendingcontrol.adapter.ExpenditureAdapter;
 import com.goliveira.spendingcontrol.R;
 import com.goliveira.spendingcontrol.ui.income.IncomeFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -48,6 +52,7 @@ public class HomeFragment extends Fragment {
     private EditText txtMonthDate;
     private PieChart pieChartHome;
     private ImageButton btnSelecionarData;
+    private final String currentUserUid = FirebaseAuth.getInstance().getUid();
     //endregion
 
     public void LoadFragmentViews(View root)
@@ -131,12 +136,20 @@ public class HomeFragment extends Fragment {
         });
     }
 
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
-        homeViewModel =
-                new ViewModelProvider(this).get(HomeViewModel.class);
+    private void UpdateMonthLabel()
+    {
+        String myFormat = "MM/yyyy";
+        SimpleDateFormat dateFormat = new SimpleDateFormat(myFormat, new Locale("pt","BR"));
+        txtMonthDate.setText(dateFormat.format(myCalendar.getTime()));
+    }
+
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
 
         View root = inflater.inflate(R.layout.fragment_home, container, false);
+
+        homeViewModel.DisplayFirebaseData(root);
 
         LoadFragmentViews(root);
 
@@ -149,10 +162,5 @@ public class HomeFragment extends Fragment {
         return root;
     }
 
-    private void UpdateMonthLabel()
-    {
-        String myFormat = "MM/yyyy";
-        SimpleDateFormat dateFormat = new SimpleDateFormat(myFormat, new Locale("pt","BR"));
-        txtMonthDate.setText(dateFormat.format(myCalendar.getTime()));
-    }
+
 }

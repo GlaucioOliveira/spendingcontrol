@@ -12,23 +12,10 @@ import java.text.NumberFormat;
 public class Expense implements IExpenditure {
 
     private String description;
-
     private int amount;
-
     private final String createdBy;
-
     final FirebaseDatabase database = FirebaseDatabase.getInstance();
-
     DatabaseReference databaseRef = database.getReference();
-
-    public String getCategory() {
-        return category;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
-    }
-
     private String category;
 
     public Expense()
@@ -39,10 +26,11 @@ public class Expense implements IExpenditure {
         createdBy = FirebaseAuth.getInstance().getUid();
     }
 
-    public Expense(String description, int amount, String createdBy) {
-        this.description = description;
-        this.amount = amount;
-        this.createdBy = createdBy;
+    public Expense(String _description, int _amount, String _category, String _createdBy) {
+        this.description = _description;
+        this.amount = _amount;
+        this.category = _category;
+        this.createdBy = _createdBy;
     }
 
     public String getDescription() {
@@ -68,6 +56,14 @@ public class Expense implements IExpenditure {
         double myNumber = this.amount;
         String formattedAmount = formatter.format(myNumber);
         return formattedAmount + " - " + category + " - " + description;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 
     public void save() {
