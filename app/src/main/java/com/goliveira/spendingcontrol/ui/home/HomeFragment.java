@@ -45,7 +45,7 @@ public class HomeFragment extends Fragment {
     public void LoadFragmentViews(View root)
     {
         btnAddIncome = root.findViewById(R.id.btnAddIncome);
-        btnAddOutcome = root.findViewById(R.id.btnAddOutcome);
+        btnAddOutcome = root.findViewById(R.id.btnAddExpense);
         pieChartHome = root.findViewById(R.id.pieChartHome);
         txtMonthDate = root.findViewById(R.id.txtMonthDate);
     }
