@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
     public void signOut(MenuItem item) {
         mAuth = FirebaseAuth.getInstance();
         mAuth.signOut();
-        Log.d("AUTH-FIREBASE","SignOut");
+        Log.d("MainActivity","SignOut");
         finish();
     }
 }

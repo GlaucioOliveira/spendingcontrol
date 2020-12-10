@@ -40,6 +40,7 @@ public class HomeViewModel extends ViewModel {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 calculateTodayExpense(dataSnapshot, root);
                 calculateTodayIncome(dataSnapshot, root);
+                TextView expenseTodayValue =  root.findViewById(R.id.txtMonthDate);
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {

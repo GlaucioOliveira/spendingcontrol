@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="income_categories">
-        <item>-- Choose One Category --</item>
+        <item>-- Select category --</item>
         <item>Salary</item>
         <item>Stocks</item>
     </string-array>

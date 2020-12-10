@@ -11,15 +11,11 @@ import java.text.NumberFormat;
 public class Income implements IExpenditure {
 
     private String description;
-
     private int amount;
-
     private String category;
-
-    private final String createdBy;
-
+    private String createdAt;
+    private final String createdBy = FirebaseAuth.getInstance().getUid();
     final FirebaseDatabase database = FirebaseDatabase.getInstance();
-
     DatabaseReference databaseRef = database.getReference();
 
     public Income()
@@ -27,13 +23,14 @@ public class Income implements IExpenditure {
         description = "";
         amount = 0;
         category = "";
-        createdBy = FirebaseAuth.getInstance().getUid();
+        createdAt = "";
     }
 
-    public Income(String description, int amount, String createdBy) {
+    public Income(String description, int amount, String category, String createdAt) {
         this.description = description;
         this.amount = amount;
-        this.createdBy = createdBy;
+        this.category = category;
+        this.createdAt = createdAt;
     }
 
     public String getCategory() {
@@ -60,6 +57,10 @@ public class Income implements IExpenditure {
         this.amount = amount;
     }
 
+    public void setCreatedAt(String createdAt) { this.createdAt = createdAt; }
+
+    public String getCreatedAt() { return createdAt; }
+
     public String getCreatedBy() { return createdBy; }
 
     public String getRecyclerViewDescription() {
@@ -69,6 +70,7 @@ public class Income implements IExpenditure {
         return formattedAmount + " - " + category + " - " + description;
     }
 
+    @Override
     public void save() {
         databaseRef.child("users/"+this.getCreatedBy()+"/incomes").push().setValue(this);
     }
