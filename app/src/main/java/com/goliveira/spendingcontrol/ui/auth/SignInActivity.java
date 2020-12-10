@@ -2,6 +2,7 @@ package com.goliveira.spendingcontrol.ui.auth;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.navigation.Navigation;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 import com.goliveira.spendingcontrol.MainActivity;
 import com.goliveira.spendingcontrol.R;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -29,88 +31,64 @@ public class SignInActivity extends AppCompatActivity {
     Button signInButton;
     Button forgotPasswordButton;
     Button sendVerifyMailAgainButton;
-    TextView errorView;
+    Button signUpButtom;
+    public FirebaseUser currentUser;
+
+    private void ToastError(String message) {
+        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+    }
+
+    private void TryToSignInSavedUser(){
+        if (mAuth.getCurrentUser() != null) {
+            mAuth.getCurrentUser().reload().addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    currentUser = mAuth.getCurrentUser();
+                    if (currentUser != null && currentUser.isEmailVerified()) {
+                        System.out.println("Email Verified : " + currentUser.isEmailVerified());
+                        Intent MainActivity = new Intent(SignInActivity.this, MainActivity.class);
+                        startActivity(MainActivity);
+                        SignInActivity.this.finish();
+                    }
+                }
+            });
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
 
+        mAuth = FirebaseAuth.getInstance();
+
+        TryToSignInSavedUser();
+
+        LoadFragmentViews();
+
+        LoadFragmentButtonListeners();
+    }
+
+    public void LoadFragmentViews() {
         emailTextInput = findViewById(R.id.signInEmailTextInput);
         passwordTextInput = findViewById(R.id.signInPasswordTextInput);
         signInButton = findViewById(R.id.signInButton);
         forgotPasswordButton = findViewById(R.id.forgotPasswordButton);
         sendVerifyMailAgainButton = findViewById(R.id.verifyEmailAgainButton);
-        errorView = findViewById(R.id.signInErrorView);
+        signUpButtom = findViewById(R.id.signUpButtom);
+    }
 
-        sendVerifyMailAgainButton.setVisibility(View.INVISIBLE);
-
-        mAuth = FirebaseAuth.getInstance();
-
+    public void LoadFragmentButtonListeners() {
         signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                if (emailTextInput.getText().toString().contentEquals("")) {
+                if (ValidateActivity() == false) return;
 
+                String email = emailTextInput.getText().toString();
+                String password = passwordTextInput.getText().toString();
 
-                    errorView.setText("Email cant be empty");
-
-
-                } else if (passwordTextInput.getText().toString().contentEquals("")) {
-
-                    errorView.setText("Password cant be empty");
-
-                } else {
-
-
-                    mAuth.signInWithEmailAndPassword(emailTextInput.getText().toString(), passwordTextInput.getText().toString())
-                            .addOnCompleteListener(SignInActivity.this, new OnCompleteListener<AuthResult>() {
-                                @Override
-                                public void onComplete(@NonNull Task<AuthResult> task) {
-                                    if (task.isSuccessful()) {
-                                        // Sign in success, update UI with the signed-in user's information
-                                        Log.d(TAG, "signInWithEmail:success");
-
-                                        FirebaseUser user = mAuth.getCurrentUser();
-
-                                        if (user != null) {
-                                            if (user.isEmailVerified()) {
-
-
-                                                System.out.println("Email Verified : " + user.isEmailVerified());
-                                                Intent HomeActivity = new Intent(SignInActivity.this, MainActivity.class);
-                                                setResult(RESULT_OK, null);
-                                                startActivity(HomeActivity);
-                                                SignInActivity.this.finish();
-
-
-                                            } else {
-
-                                                sendVerifyMailAgainButton.setVisibility(View.VISIBLE);
-                                                errorView.setText("Please Verify your EmailID and SignIn");
-
-                                            }
-                                        }
-
-                                    } else {
-                                        // If sign in fails, display a message to the user.
-                                        Log.w(TAG, "signInWithEmail:failure", task.getException());
-                                        Toast.makeText(SignInActivity.this, "Authentication failed.",
-                                                Toast.LENGTH_SHORT).show();
-                                        if (task.getException() != null) {
-                                            errorView.setText(task.getException().getMessage());
-                                        }
-
-                                    }
-
-                                }
-                            });
-
-
-                }
-
-
+                FireBaseSignIn(email, password);
             }
         });
 
@@ -126,6 +104,65 @@ public class SignInActivity extends AppCompatActivity {
             }
         });
 
+        signUpButtom.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent signUpIntent = new Intent(SignInActivity.this, SignUpActivity.class);
+                startActivity(signUpIntent);
+            }
+        });
+    }
 
+    private boolean ValidateActivity() {
+        if (emailTextInput.getText().toString().contentEquals("")) {
+            ToastError("Email can't be empty");
+            return false;
+        }
+
+        if (passwordTextInput.getText().toString().contentEquals("")) {
+            ToastError("Password can't be empty");
+            return false;
+        }
+
+        return true;
+    }
+
+    public void FireBaseSignIn(String email, String password) {
+        mAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(SignInActivity.this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d(TAG, "signInWithEmail:success");
+
+                            FirebaseUser user = mAuth.getCurrentUser();
+
+                            if (user != null) {
+                                if (user.isEmailVerified()) {
+
+                                    System.out.println("Email Verified : " + user.isEmailVerified());
+                                    Intent HomeActivity = new Intent(SignInActivity.this, MainActivity.class);
+                                    setResult(RESULT_OK, null);
+                                    startActivity(HomeActivity);
+                                    SignInActivity.this.finish();
+
+                                } else {
+                                    sendVerifyMailAgainButton.setVisibility(View.VISIBLE);
+                                    ToastError("You need to verify your E-mail!");
+                                }
+                            }
+
+                        } else {
+                            ToastError("Authentication failed :(");
+
+                            if (task.getException() != null) {
+                                Log.w(TAG, "signInWithEmail:failure", task.getException());
+                            }
+
+                            forgotPasswordButton.setVisibility(View.VISIBLE);
+                        }
+                    }
+                });
     }
 }
