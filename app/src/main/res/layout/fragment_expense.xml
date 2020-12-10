@@ -8,12 +8,12 @@
     tools:context=".ui.expense.ExpenseFragment">
 
     <EditText
-        android:id="@+id/txtOutcomeAmount"
+        android:id="@+id/expenseAmount"
         android:layout_width="370dp"
         android:layout_height="49dp"
         android:layout_marginTop="36dp"
         android:ems="10"
-        android:hint="Outcome Amount"
+        android:hint="Expense amount"
         android:inputType="numberDecimal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.487"
@@ -21,32 +21,21 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/fragment_outcome_txtDate"
+        android:id="@+id/expenseCreatedAt"
         android:layout_width="367dp"
         android:layout_height="50dp"
         android:layout_marginTop="44dp"
         android:ems="10"
-        android:enabled="false"
-        android:hint="Date"
+        android:hint="Expense date"
         android:inputType="date"
+        android:focusable="false"
+        android:clickable="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtOutcomeAmount" />
-
-    <Button
-        android:id="@+id/btnAddOutcome_fragment_outcome"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="48dp"
-        android:layout_marginEnd="24dp"
-        android:backgroundTint="#F44336"
-        android:text="Add Outcome"
-        app:icon="@drawable/add_outcome"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtOutcomeDescription" />
+        app:layout_constraintTop_toBottomOf="@+id/expenseAmount" />
 
     <Spinner
-        android:id="@+id/cmbOutcomeCategory"
+        android:id="@+id/expenseCategory"
         android:layout_width="363dp"
         android:layout_height="51dp"
         android:layout_marginTop="32dp"
@@ -54,10 +43,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.489"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fragment_outcome_txtDate" />
+        app:layout_constraintTop_toBottomOf="@+id/expenseCreatedAt" />
 
     <EditText
-        android:id="@+id/txtOutcomeDescription"
+        android:id="@+id/expenseDescription"
         android:layout_width="368dp"
         android:layout_height="52dp"
         android:layout_marginTop="28dp"
@@ -68,6 +57,18 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.465"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cmbOutcomeCategory" />
+        app:layout_constraintTop_toBottomOf="@+id/expenseCategory" />
+
+    <Button
+        android:id="@+id/submitExpense"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="48dp"
+        android:layout_marginEnd="24dp"
+        android:backgroundTint="#F44336"
+        android:text="Add Outcome"
+        app:icon="@drawable/add_outcome"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/expenseDescription" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

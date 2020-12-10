@@ -13,24 +13,24 @@ public class Expense implements IExpenditure {
 
     private String description;
     private int amount;
-    private final String createdBy;
+    private String createdAt;
+    private final String createdBy = FirebaseAuth.getInstance().getUid();
     final FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference databaseRef = database.getReference();
     private String category;
 
-    public Expense()
-    {
+    public Expense() {
         description = "";
         amount = 0;
         category = "";
-        createdBy = FirebaseAuth.getInstance().getUid();
+        createdAt = "";
     }
 
-    public Expense(String _description, int _amount, String _category, String _createdBy) {
-        this.description = _description;
-        this.amount = _amount;
-        this.category = _category;
-        this.createdBy = _createdBy;
+    public Expense(String description, int amount, String category, String createdAt) {
+        this.description = description;
+        this.amount = amount;
+        this.category = category;
+        this.createdAt = createdAt;
     }
 
     public String getDescription() {
@@ -48,6 +48,10 @@ public class Expense implements IExpenditure {
     public void setAmount(int amount) {
         this.amount = amount;
     }
+
+    public String getCreatedAt() { return createdAt; }
+
+    public void setCreatedAt(String expenseDate) { this.createdAt = expenseDate; }
 
     public String getCreatedBy() { return createdBy; }
 

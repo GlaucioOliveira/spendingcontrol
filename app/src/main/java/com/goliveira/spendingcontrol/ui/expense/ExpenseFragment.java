@@ -1,11 +1,13 @@
 package com.goliveira.spendingcontrol.ui.expense;
 
+import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 
@@ -17,8 +19,8 @@ import com.goliveira.spendingcontrol.R;
 import com.goliveira.spendingcontrol.model.BudgetList;
 import com.goliveira.spendingcontrol.model.Expense;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -27,97 +29,81 @@ import java.util.Date;
  */
 public class ExpenseFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-    Button btnAddOutcome;
+    private Calendar expenseCalendar;
+    private Button btnAddExpense;
+    private EditText expenseDate;
 
     public ExpenseFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment FragmentInput.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static ExpenseFragment newInstance(String param1, String param2) {
-        ExpenseFragment fragment = new ExpenseFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
-//    @Override
-//    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-//                             Bundle savedInstanceState) {
-//        // Inflate the layout for this fragment
-//        return inflater.inflate(R.layout.fragment_input, container, false);
-//    }
+    public void setDateTimePicker(View root)
+    {
+        expenseCalendar = Calendar.getInstance();
+        expenseDate = (EditText) root.findViewById(R.id.expenseCreatedAt);
 
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
+        DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                expenseCalendar.set(Calendar.YEAR, year);
+                expenseCalendar.set(Calendar.MONTH, monthOfYear);
+                expenseCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                expenseDate.setText(dateFormat.format(expenseCalendar.getTime()));
+            }
+        };
 
-        View root = inflater.inflate(R.layout.fragment_outcome, container, false);
-
-        btnAddOutcome = root.findViewById(R.id.btnAddOutcome_fragment_outcome);
-
-        btnAddOutcome.setOnClickListener(new View.OnClickListener() {
+        expenseDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Expense newExpense = new Expense();
+                new DatePickerDialog(ExpenseFragment.this.getContext(), date, expenseCalendar.get(Calendar.YEAR), expenseCalendar.get(Calendar.MONTH), expenseCalendar.get(Calendar.DAY_OF_MONTH)).show();
+            }
+        });
+    }
 
-                EditText txtOutcomeAmount = root.findViewById(R.id.txtOutcomeAmount);
-                EditText txtOutcomeDescription = root.findViewById(R.id.txtOutcomeDescription);
-                Spinner cmbOutcomeCategory = root.findViewById(R.id.cmbOutcomeCategory);
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-                newExpense.setDescription(txtOutcomeDescription.getText().toString());
-                newExpense.setAmount(GetInt(txtOutcomeAmount.getText().toString()));
-                newExpense.setCategory(cmbOutcomeCategory.getSelectedItem().toString());
+        View root = inflater.inflate(R.layout.fragment_expense, container, false);
 
-                newExpense.save();
-                BudgetList.getInstance().budget.add(newExpense);
+        btnAddExpense = root.findViewById(R.id.submitExpense);
+
+        btnAddExpense.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Expense expense = new Expense();
+
+                EditText expenseAmount = root.findViewById(R.id.expenseAmount);
+                EditText expenseDate = root.findViewById(R.id.expenseCreatedAt);
+                EditText expenseDescription = root.findViewById(R.id.expenseDescription);
+                Spinner expenseCategory = root.findViewById(R.id.expenseCategory);
+
+                expense.setDescription(expenseDescription.getText().toString());
+                expense.setAmount(GetInt(expenseAmount.getText().toString()));
+                expense.setCreatedAt(expenseDate.getText().toString());
+                expense.setCategory(expenseCategory.getSelectedItem().toString());
+
+                expense.save();
+
+                // TODO: replace BudgetList with firebase data
+                BudgetList.getInstance().budget.add(expense);
 
                 Navigation.findNavController(view).popBackStack(); //goes to the previous fragment
             }
         });
 
-
-        //fulfill the combobox...
-        Spinner spinner = (Spinner) root.findViewById(R.id.cmbOutcomeCategory);
-
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
-                root.getContext(), R.array.outcome_categories, android.R.layout.simple_spinner_item);
-
+        Spinner spinner = (Spinner) root.findViewById(R.id.expenseCategory);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(root.getContext(), R.array.outcome_categories, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
 
-
         //setting the date field
-        EditText fragment_outcome_txtDate = root.findViewById(R.id.fragment_outcome_txtDate);
-        Date currentTime = Calendar.getInstance().getTime();
-
-        fragment_outcome_txtDate.setText(currentTime.toString());
+        setDateTimePicker(root);
 
         return root;
     }
