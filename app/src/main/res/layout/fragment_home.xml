@@ -92,7 +92,7 @@
                         android:layout_height="22dp"
                         android:layout_marginStart="12dp"
                         android:layout_marginTop="8dp"
-                        android:text="Day Outcomes"
+                        android:text="Day Expenditures"
                         android:textColor="@color/expense_color" />
 
                     <TextView
@@ -197,7 +197,7 @@
                         android:layout_weight="1"
                         android:backgroundTint="@color/expense_color"
                         android:paddingRight="12dp"
-                        android:text="Add Outcome"
+                        android:text="Expenditure"
                         app:icon="@drawable/add_expense" />
 
                     <Space
@@ -211,7 +211,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:backgroundTint="@color/income_color"
-                        android:text="Add Income"
+                        android:text="        Income"
                         app:icon="@drawable/add_income" />
                 </LinearLayout>
 
