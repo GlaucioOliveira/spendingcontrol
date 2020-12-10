@@ -1,6 +1,7 @@
 package com.goliveira.spendingcontrol.ui.home;
 
 import android.app.DatePickerDialog;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -120,8 +123,10 @@ public class HomeFragment extends Fragment {
         return sdf.format(date);
     }
 
-
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+        actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.white)));
+        actionBar.hide();
 
         homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
 

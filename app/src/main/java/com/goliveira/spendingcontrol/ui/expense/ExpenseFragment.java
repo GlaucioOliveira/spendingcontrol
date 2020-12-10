@@ -1,10 +1,12 @@
 package com.goliveira.spendingcontrol.ui.expense;
 
-import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -15,6 +17,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
@@ -36,6 +40,7 @@ public class ExpenseFragment extends Fragment {
     private Calendar expenseCalendar;
     private FloatingActionButton btnAddExpense;
     private EditText expenseDate;
+    private final String TAG = "Expense Fragment";
 
     public ExpenseFragment() {
         // Required empty public constructor
@@ -44,6 +49,30 @@ public class ExpenseFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+        actionBar.show();
+        actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.expense_color)));
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+        actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.white)));
+        actionBar.hide();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Log.i(TAG,"Back Button Pressed");
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                Log.i(TAG,"home on back pressed");
+                getActivity().onBackPressed();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     public void setDateTimePicker(View root)
