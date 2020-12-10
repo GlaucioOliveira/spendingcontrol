@@ -16,7 +16,7 @@
             app:popUpTo="@id/navigation_home" />
         <action
             android:id="@+id/action_navigation_home_to_navigation_outcome"
-            app:destination="@id/navigation_outcome"
+            app:destination="@id/navigation_expense"
             app:popUpTo="@id/navigation_home" />
     </fragment>
 
@@ -37,8 +37,8 @@
         android:label="Add Income"
         tools:layout="@layout/fragment_income" />
     <fragment
-        android:id="@+id/navigation_outcome"
+        android:id="@+id/navigation_expense"
         android:name="com.goliveira.spendingcontrol.ui.expense.ExpenseFragment"
-        android:label="Add Outcome"
-        tools:layout="@layout/fragment_outcome" />
+        android:label="New expense"
+        tools:layout="@layout/fragment_expense" />
 </navigation>

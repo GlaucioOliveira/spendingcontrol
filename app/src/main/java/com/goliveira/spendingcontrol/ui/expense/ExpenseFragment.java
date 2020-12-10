@@ -1,15 +1,18 @@
 package com.goliveira.spendingcontrol.ui.expense;
 
+import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -18,19 +21,20 @@ import androidx.navigation.Navigation;
 import com.goliveira.spendingcontrol.R;
 import com.goliveira.spendingcontrol.model.BudgetList;
 import com.goliveira.spendingcontrol.model.Expense;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link ExpenseFragment#newInstance} factory method to
+ * Use the {@link ExpenseFragment} factory method to
  * create an instance of this fragment.
  */
 public class ExpenseFragment extends Fragment {
 
     private Calendar expenseCalendar;
-    private Button btnAddExpense;
+    private FloatingActionButton btnAddExpense;
     private EditText expenseDate;
 
     public ExpenseFragment() {
@@ -70,18 +74,21 @@ public class ExpenseFragment extends Fragment {
 
         View root = inflater.inflate(R.layout.fragment_expense, container, false);
 
-        btnAddExpense = root.findViewById(R.id.submitExpense);
+        btnAddExpense = root.findViewById(R.id.btnSubmitExpense);
 
         btnAddExpense.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Expense expense = new Expense();
 
                 EditText expenseAmount = root.findViewById(R.id.expenseAmount);
                 EditText expenseDate = root.findViewById(R.id.expenseCreatedAt);
                 EditText expenseDescription = root.findViewById(R.id.expenseDescription);
                 Spinner expenseCategory = root.findViewById(R.id.expenseCategory);
-
+                // validate fields
+                if(checkIsEmpty(expenseAmount) || checkIsEmpty(expenseDate) || checkSelect(expenseCategory) || checkIsEmpty(expenseDescription)){
+                    return;
+                }
+                Expense expense = new Expense();
                 expense.setDescription(expenseDescription.getText().toString());
                 expense.setAmount(GetInt(expenseAmount.getText().toString()));
                 expense.setCreatedAt(expenseDate.getText().toString());
@@ -97,7 +104,7 @@ public class ExpenseFragment extends Fragment {
         });
 
         Spinner spinner = (Spinner) root.findViewById(R.id.expenseCategory);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(root.getContext(), R.array.outcome_categories, android.R.layout.simple_spinner_item);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(root.getContext(), R.array.expense_categories, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
@@ -106,6 +113,24 @@ public class ExpenseFragment extends Fragment {
         setDateTimePicker(root);
 
         return root;
+    }
+
+    public boolean checkIsEmpty (TextView textView) {
+        if(TextUtils.isEmpty(textView.getText().toString())){
+            textView.setError("Required field");
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean checkSelect (Spinner spinner){
+        if(TextUtils.equals(spinner.getSelectedItem().toString(), "-- Select category --")) {
+            Toast.makeText(ExpenseFragment.this.getContext(), "Category field is required", Toast.LENGTH_SHORT).show();
+            return true;
+        } else {
+            return false;
+        }
     }
 
 

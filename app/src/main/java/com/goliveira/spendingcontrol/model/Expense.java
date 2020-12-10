@@ -51,7 +51,7 @@ public class Expense implements IExpenditure {
 
     public String getCreatedAt() { return createdAt; }
 
-    public void setCreatedAt(String expenseDate) { this.createdAt = expenseDate; }
+    public void setCreatedAt(String createdAt) { this.createdAt = createdAt; }
 
     public String getCreatedBy() { return createdBy; }
 
