@@ -30,13 +30,6 @@ public class HomeFragment extends Fragment {
     private Button btnAddIncome;
     private Button btnAddExpense;
     private EditText txtMonthDate;
-    SimpleDateFormat sdf;
-    SimpleDateFormat dateInput;
-
-    public HomeFragment() {
-        sdf = new SimpleDateFormat("MMM yyyy");
-        dateInput = new SimpleDateFormat("yyyy-MM-dd");
-    }
 
     public void LoadFragmentViews(View root)
     {
@@ -65,6 +58,8 @@ public class HomeFragment extends Fragment {
     }
 
     private String formatMonthYear(String str) {
+        SimpleDateFormat sdf = new SimpleDateFormat("MMM yyyy");
+        SimpleDateFormat dateInput = new SimpleDateFormat("yyyy-MM-dd");
         Date date = null;
         try {
             date = dateInput.parse(str);
@@ -75,13 +70,16 @@ public class HomeFragment extends Fragment {
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
         ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
         actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.white)));
         actionBar.hide();
+
         homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
         View root = inflater.inflate(R.layout.fragment_home, container, false);
         LoadFragmentViews(root);
         LoadFragmentButtonListeners();
+
         homeViewModel.DisplayFirebaseData(root, this);
         ConfigureDateTimePicker();
         return root;

@@ -1,29 +1,30 @@
 package com.goliveira.spendingcontrol.model;
 
+import com.goliveira.spendingcontrol.interfaces.IExpenditure;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class Transaction {
-
+public class Transaction implements IExpenditure {
 
     private TransactionType type;
     private double amount = 0.00;
     private String date = "";
     private String category = "";
     private String description = "";
-
     // timestamps
-    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private String createdAt = "";
-    private final String createdBy = FirebaseAuth.getInstance().getUid();
+    private final String createdBy = FirebaseAuth.getInstance().getCurrentUser().getUid();
     private final String createdByName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
 
     public Transaction(){
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         this.createdAt = dateFormat.format(new Date());
     }
 
@@ -59,7 +60,7 @@ public class Transaction {
         databaseRef.child("users").child(getCreatedBy()).child("transactions").push().setValue(this);
     }
 
-    public static double calculateTotal(DataSnapshot dataSnapshot, TransactionType type) {
+    public static double calculateTotal(@NotNull DataSnapshot dataSnapshot, TransactionType type) {
         double total = 0.00;
         for (DataSnapshot ds : dataSnapshot.child("transactions").getChildren()) {
             Transaction transaction =  ds.getValue(Transaction.class);

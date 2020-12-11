@@ -9,6 +9,7 @@ public class User {
 
     private String uid;
     private String email;
+    private String displayName;
     final FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference databaseRef = database.getReference();
 
@@ -16,9 +17,10 @@ public class User {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
     }
 
-    public User(String uid, String email) {
+    public User(String uid, String email, String displayName) {
         this.uid = uid;
         this.email = email;
+        this.displayName = displayName;
     }
 
     public String getUid() {
@@ -28,6 +30,10 @@ public class User {
     public String getEmail() {
         return email;
     }
+
+    public String getDisplayName() { return displayName; }
+
+    public void setDisplayName(String displayName) {  this.displayName = displayName; }
 
     public void save() {
         databaseRef.child("users/" + this.getUid()).setValue(this);

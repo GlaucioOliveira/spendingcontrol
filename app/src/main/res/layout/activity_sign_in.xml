@@ -62,21 +62,22 @@
             android:orientation="horizontal">
 
             <Button
-                android:id="@+id/signUpButtom"
-                android:layout_width="wrap_content"
+                android:id="@+id/forgotPasswordButton"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight=".50"
                 android:layout_marginEnd="28dp"
                 android:backgroundTint="#009688"
-                android:paddingStart="60dp"
-                android:paddingRight="60dp"
-                android:text="Sign Up" />
+                android:text="@string/forgot_password" />
 
             <Button
-                android:id="@+id/forgotPasswordButton"
-                android:layout_width="wrap_content"
+                android:id="@+id/signUpButtom"
+                android:layout_width="0dp"
+                android:layout_weight=".50"
                 android:layout_height="wrap_content"
-                android:text="@string/forgot_password"
-                android:visibility="invisible" />
+                android:text="Sign up"
+                android:backgroundTint="#009688"
+                />
 
         </LinearLayout>
 

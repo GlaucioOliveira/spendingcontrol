@@ -22,6 +22,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 
 public class SignUpActivity extends AppCompatActivity {
 
@@ -30,6 +31,7 @@ public class SignUpActivity extends AppCompatActivity {
     Button signUpButton;
     EditText signUpEmailTextInput;
     EditText signUpPasswordTextInput;
+    EditText signUpDisplayNameTextInput;
     CheckBox agreementCheckBox;
     TextView errorView;
 
@@ -51,6 +53,11 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     private boolean ValidateActivity() {
+        if (signUpDisplayNameTextInput.getText().toString().contentEquals("")) {
+            ToastError("Email can't be empty");
+            return false;
+        }
+
         if (signUpEmailTextInput.getText().toString().contentEquals("")) {
             ToastError("Email can't be empty");
             return false;
@@ -61,7 +68,7 @@ public class SignUpActivity extends AppCompatActivity {
             return false;
         }
 
-        if (agreementCheckBox.isChecked()) {
+        if (!agreementCheckBox.isChecked()) {
             ToastError("Please agree to terms and the Condition!");
             return false;
         }
@@ -72,12 +79,13 @@ public class SignUpActivity extends AppCompatActivity {
     private void LoadFragmentViews() {
         signUpEmailTextInput = findViewById(R.id.signUpEmailTextInput);
         signUpPasswordTextInput = findViewById(R.id.signUpPasswordTextInput);
+        signUpDisplayNameTextInput = findViewById(R.id.signUpDisplayNameTextInput);
         signUpButton = findViewById(R.id.signUpButton);
         agreementCheckBox = findViewById(R.id.agreementCheckbox);
         errorView = findViewById(R.id.signUpErrorView);
     }
 
-    private void FireBaseSignUp(String email, String password) {
+    private void FireBaseSignUp(String email, String password, String displayName) {
         mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(SignUpActivity.this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
@@ -85,6 +93,20 @@ public class SignUpActivity extends AppCompatActivity {
                     // Sign in success, update UI with the signed-in user's information
                     Log.d(TAG, "createUserWithEmail:success");
                     FirebaseUser user = mAuth.getCurrentUser();
+
+                    UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                    .setDisplayName(displayName)
+                    .build();
+
+                    user.updateProfile(profileUpdates)
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                Log.d(TAG, "User profile updated.");
+                            }
+                        }
+                    });
                     try {
                         if (user != null)
                             user.sendEmailVerification()
@@ -93,7 +115,8 @@ public class SignUpActivity extends AppCompatActivity {
                                         public void onComplete(@NonNull Task<Void> task) {
                                             if (task.isSuccessful()) {
                                                 Log.d(TAG, "Email sent.");
-                                                User newUser = new User(user.getUid(), user.getEmail());
+
+                                                User newUser = new User(user.getUid(), user.getEmail(), user.getDisplayName());
                                                 newUser.save();
                                                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
                                                         SignUpActivity.this);
@@ -144,8 +167,9 @@ public class SignUpActivity extends AppCompatActivity {
 
                 String email = signUpEmailTextInput.getText().toString();
                 String password = signUpPasswordTextInput.getText().toString();
+                String displayName = signUpDisplayNameTextInput.getText().toString();
 
-                FireBaseSignUp(email, password);
+                FireBaseSignUp(email, password, displayName);
             }
         });
     }
