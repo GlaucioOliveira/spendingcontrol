@@ -1,13 +1,12 @@
 package com.goliveira.spendingcontrol.ui.home;
 
-import android.app.DatePickerDialog;
+import android.annotation.SuppressLint;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -29,53 +28,39 @@ public class HomeFragment extends Fragment {
 
     private HomeViewModel homeViewModel;
     private Button btnAddIncome;
-    private Button btnAddOutcome;
+    private Button btnAddExpense;
     private EditText txtMonthDate;
-    SimpleDateFormat sdf = new SimpleDateFormat("MMM yyyy");
-    SimpleDateFormat dateInput = new SimpleDateFormat("yyyy-MM-dd");
+    SimpleDateFormat sdf;
+    SimpleDateFormat dateInput;
+
+    public HomeFragment() {
+        sdf = new SimpleDateFormat("MMM yyyy");
+        dateInput = new SimpleDateFormat("yyyy-MM-dd");
+    }
 
     public void LoadFragmentViews(View root)
     {
         btnAddIncome = root.findViewById(R.id.btnAddIncome);
-        btnAddOutcome = root.findViewById(R.id.btnAddExpense);
+        btnAddExpense = root.findViewById(R.id.btnAddExpense);
         txtMonthDate = root.findViewById(R.id.txtMonthDate);
     }
 
     public void LoadFragmentButtonListeners()
     {
-        btnAddIncome.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Navigation.findNavController(view).navigate(R.id.action_navigation_home_to_navigation_income);
-            }
-        });
-
-        btnAddOutcome.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Navigation.findNavController(view).navigate(R.id.action_navigation_home_to_navigation_outcome);
-            }
-        });
-
+        btnAddIncome.setOnClickListener(view -> Navigation.findNavController(view).navigate(R.id.action_navigation_home_to_navigation_income));
+        btnAddExpense.setOnClickListener(view -> Navigation.findNavController(view).navigate(R.id.action_navigation_home_to_navigation_outcome));
     }
 
-    public void ConfigureDateTimePicker(View root)
+    public void ConfigureDateTimePicker()
     {
         MonthYearPickerDialog pickerDialog = new MonthYearPickerDialog();
-
-        txtMonthDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                pickerDialog.setListener(new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePicker datePicker, int year, int month, int i2) {
-                        String monthYearStr = year + "-" + (month + 1) + "-" + i2;
-                        txtMonthDate.setText(formatMonthYear(monthYearStr));
-                        Toast.makeText(HomeFragment.this.getContext(), year + "-" + month, Toast.LENGTH_SHORT).show();
-                    }
-                });
-                pickerDialog.show(getFragmentManager(), "MonthYearPickerDialog");
-            }
+        txtMonthDate.setOnClickListener(view -> {
+            pickerDialog.setListener((datePicker, year, month, i2) -> {
+                String monthYearStr = year + "-" + (month + 1) + "-" + i2;
+                txtMonthDate.setText(formatMonthYear(monthYearStr));
+                Toast.makeText(HomeFragment.this.getContext(), year + "-" + month, Toast.LENGTH_SHORT).show();
+            });
+            pickerDialog.show(getFragmentManager(), "MonthYearPickerDialog");
         });
     }
 
@@ -93,17 +78,12 @@ public class HomeFragment extends Fragment {
         ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
         actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.white)));
         actionBar.hide();
-
         homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
-
         View root = inflater.inflate(R.layout.fragment_home, container, false);
         LoadFragmentViews(root);
         LoadFragmentButtonListeners();
         homeViewModel.DisplayFirebaseData(root, this);
-        ConfigureDateTimePicker(root);
-
+        ConfigureDateTimePicker();
         return root;
     }
-
-
 }

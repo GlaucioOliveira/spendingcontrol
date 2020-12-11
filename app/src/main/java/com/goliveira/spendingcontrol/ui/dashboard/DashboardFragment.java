@@ -1,13 +1,13 @@
 package com.goliveira.spendingcontrol.ui.dashboard;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -15,10 +15,23 @@ import com.goliveira.spendingcontrol.R;
 import com.goliveira.spendingcontrol.adapter.ExpenditureAdapter;
 import com.goliveira.spendingcontrol.interfaces.IExpenditure;
 import com.goliveira.spendingcontrol.model.BudgetList;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
 public class DashboardFragment extends Fragment {
+
+    private final String currentUserUid;
+    private final String TAG = "DashboardFragment";
+
+    public DashboardFragment() {
+        currentUserUid = FirebaseAuth.getInstance().getUid();
+    }
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -27,6 +40,18 @@ public class DashboardFragment extends Fragment {
         RecyclerView transactionsList = root.findViewById(R.id.transactionsList);
 
         transactionsList.setLayoutManager(new LinearLayoutManager(root.getContext()));
+
+        DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference().child("users").child(currentUserUid);
+        dbRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.d(TAG, "Error fetching database");
+            }
+        });
 
         ArrayList<IExpenditure> expenditures = BudgetList.getInstance().budget;
 

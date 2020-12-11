@@ -23,8 +23,8 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
 import com.goliveira.spendingcontrol.R;
-import com.goliveira.spendingcontrol.model.BudgetList;
-import com.goliveira.spendingcontrol.model.Expense;
+import com.goliveira.spendingcontrol.model.Transaction;
+import com.goliveira.spendingcontrol.model.TransactionType;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.text.SimpleDateFormat;
@@ -78,7 +78,7 @@ public class ExpenseFragment extends Fragment {
     public void setDateTimePicker(View root)
     {
         expenseCalendar = Calendar.getInstance();
-        expenseDate = (EditText) root.findViewById(R.id.expenseCreatedAt);
+        expenseDate = root.findViewById(R.id.expenseCreatedAt);
 
         DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
             @Override
@@ -91,12 +91,7 @@ public class ExpenseFragment extends Fragment {
             }
         };
 
-        expenseDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                new DatePickerDialog(ExpenseFragment.this.getContext(), date, expenseCalendar.get(Calendar.YEAR), expenseCalendar.get(Calendar.MONTH), expenseCalendar.get(Calendar.DAY_OF_MONTH)).show();
-            }
-        });
+        expenseDate.setOnClickListener(view -> new DatePickerDialog(ExpenseFragment.this.getContext(), date, expenseCalendar.get(Calendar.YEAR), expenseCalendar.get(Calendar.MONTH), expenseCalendar.get(Calendar.DAY_OF_MONTH)).show());
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -117,22 +112,23 @@ public class ExpenseFragment extends Fragment {
                 if(checkIsEmpty(expenseAmount) || checkIsEmpty(expenseDate) || checkSelect(expenseCategory) || checkIsEmpty(expenseDescription)){
                     return;
                 }
-                Expense expense = new Expense();
+                Transaction expense = new Transaction();
+                expense.setType(TransactionType.EXPENSE);
                 expense.setDescription(expenseDescription.getText().toString());
                 expense.setAmount(GetInt(expenseAmount.getText().toString()));
-                expense.setCreatedAt(expenseDate.getText().toString());
+                expense.setDate(expenseDate.getText().toString());
                 expense.setCategory(expenseCategory.getSelectedItem().toString());
 
                 expense.save();
 
                 // TODO: replace BudgetList with firebase data
-                BudgetList.getInstance().budget.add(expense);
+                //BudgetList.getInstance().budget.add(expense);
 
                 Navigation.findNavController(view).popBackStack(); //goes to the previous fragment
             }
         });
 
-        Spinner spinner = (Spinner) root.findViewById(R.id.expenseCategory);
+        Spinner spinner = root.findViewById(R.id.expenseCategory);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(root.getContext(), R.array.expense_categories, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);

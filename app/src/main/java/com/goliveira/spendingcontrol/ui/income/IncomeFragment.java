@@ -17,20 +17,18 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.goliveira.spendingcontrol.R;
-import com.goliveira.spendingcontrol.model.BudgetList;
-import com.goliveira.spendingcontrol.model.Income;
+import com.goliveira.spendingcontrol.model.Transaction;
+import com.goliveira.spendingcontrol.model.TransactionType;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 
 public class IncomeFragment extends Fragment {
 
@@ -77,56 +75,43 @@ public class IncomeFragment extends Fragment {
         incomeCalendar = Calendar.getInstance();
         incomeDate = (EditText) root.findViewById(R.id.incomeCreatedAt);
 
-        DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                incomeCalendar.set(Calendar.YEAR, year);
-                incomeCalendar.set(Calendar.MONTH, monthOfYear);
-                incomeCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                incomeDate.setText(dateFormat.format(incomeCalendar.getTime()));
-            }
+        DatePickerDialog.OnDateSetListener date = (view, year, monthOfYear, dayOfMonth) -> {
+            incomeCalendar.set(Calendar.YEAR, year);
+            incomeCalendar.set(Calendar.MONTH, monthOfYear);
+            incomeCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            incomeDate.setText(dateFormat.format(incomeCalendar.getTime()));
         };
 
-        incomeDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                new DatePickerDialog(IncomeFragment.this.getContext(), date, incomeCalendar.get(Calendar.YEAR), incomeCalendar.get(Calendar.MONTH), incomeCalendar.get(Calendar.DAY_OF_MONTH)).show();
-            }
-        });
+        incomeDate.setOnClickListener(view -> new DatePickerDialog(IncomeFragment.this.getContext(), date, incomeCalendar.get(Calendar.YEAR), incomeCalendar.get(Calendar.MONTH), incomeCalendar.get(Calendar.DAY_OF_MONTH)).show());
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View root = inflater.inflate(R.layout.fragment_income, container, false);
-
         btnAddIncome = root.findViewById(R.id.btnSubmitIncome);
 
-        btnAddIncome.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                EditText incomeAmount = root.findViewById(R.id.incomeAmount);
-                EditText incomeDate = root.findViewById(R.id.incomeCreatedAt);
-                EditText incomeDescription = root.findViewById(R.id.incomeDescription);
-                Spinner incomeCategory = root.findViewById(R.id.incomeCategory);
-                // validate fields
-                if(checkIsEmpty(incomeAmount) || checkIsEmpty(incomeDate) || checkSelect(incomeCategory) || checkIsEmpty(incomeDescription)){
-                    return;
-                }
-                Income income = new Income();
-                income.setDescription(incomeDescription.getText().toString());
-                income.setAmount(GetInt(incomeAmount.getText().toString()));
-                income.setCreatedAt(incomeDate.getText().toString());
-                income.setCategory(incomeCategory.getSelectedItem().toString());
-
-                income.save();
-
-                // TODO: replace BudgetList with firebase data
-                BudgetList.getInstance().budget.add(income);
-
-                Navigation.findNavController(view).popBackStack(); //goes to the previous fragment
+        btnAddIncome.setOnClickListener(view -> {
+            EditText incomeAmount = root.findViewById(R.id.incomeAmount);
+            EditText incomeDate = root.findViewById(R.id.incomeCreatedAt);
+            EditText incomeDescription = root.findViewById(R.id.incomeDescription);
+            Spinner incomeCategory = root.findViewById(R.id.incomeCategory);
+            // validate fields
+            if(checkIsEmpty(incomeAmount) || checkIsEmpty(incomeDate) || checkSelect(incomeCategory) || checkIsEmpty(incomeDescription)){
+                return;
             }
+            Transaction income = new Transaction();
+            income.setType(TransactionType.INCOME);
+            income.setDescription(incomeDescription.getText().toString());
+            income.setAmount(GetInt(incomeAmount.getText().toString()));
+            income.setDate(incomeDate.getText().toString());
+            income.setCategory(incomeCategory.getSelectedItem().toString());
+            income.save();
+
+            // TODO: replace BudgetList with firebase data
+            //BudgetList.getInstance().budget.add(income);
+
+            Navigation.findNavController(view).popBackStack(); //goes to the previous fragment
         });
 
         Spinner spinner = root.findViewById(R.id.incomeCategory);

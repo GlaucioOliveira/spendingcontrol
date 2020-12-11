@@ -14,8 +14,8 @@ import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.goliveira.spendingcontrol.R;
-import com.goliveira.spendingcontrol.model.Expense;
-import com.goliveira.spendingcontrol.model.Income;
+import com.goliveira.spendingcontrol.model.Transaction;
+import com.goliveira.spendingcontrol.model.TransactionType;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -28,14 +28,12 @@ import java.util.List;
 
 public class HomeViewModel extends ViewModel {
 
-    private final String currentUserUid = FirebaseAuth.getInstance().getUid();
-    private PieChart pieChartHome;
-
+    private final String currentUserUid;
+    private final String TAG = "DashboardFragment";
 
     public HomeViewModel() {
-
+        currentUserUid = FirebaseAuth.getInstance().getUid();
     }
-
 
     public void DisplayFirebaseData (View root, Fragment fragment) {
         DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference().child("users").child(currentUserUid);
@@ -43,11 +41,11 @@ public class HomeViewModel extends ViewModel {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-                double totalExpense = calculateExpense(dataSnapshot);
+                double totalExpense = Transaction.calculateTotal(dataSnapshot, TransactionType.EXPENSE);
                 TextView expenseTodayValue =  root.findViewById(R.id.expenseTodayValue);
                 expenseTodayValue.setText( "$ " + totalExpense);
 
-                double totalIncome = calculateIncome(dataSnapshot);
+                double totalIncome = Transaction.calculateTotal(dataSnapshot, TransactionType.INCOME);
                 TextView todayIncomeValue =  root.findViewById(R.id.todayIncomeValue);
                 todayIncomeValue.setText( "$ " + totalIncome);
 
@@ -56,27 +54,9 @@ public class HomeViewModel extends ViewModel {
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Log.d("HomeFragment", "Error fetching database");
+                Log.d(TAG, "Error fetching database");
             }
         });
-    }
-
-    private double calculateExpense (DataSnapshot dataSnapshot) {
-        double totalExpense = 0.00;
-        for (DataSnapshot ds : dataSnapshot.child("expenses").getChildren()) {
-            Expense expense = ds.getValue(Expense.class);
-            totalExpense = totalExpense + expense.getAmount();
-        }
-        return totalExpense;
-    }
-
-    private double calculateIncome(DataSnapshot dataSnapshot) {
-        double totalIncome = 0.00;
-        for (DataSnapshot ds : dataSnapshot.child("incomes").getChildren()) {
-            Income income = ds.getValue(Income.class);
-            totalIncome = totalIncome + income.getAmount();
-        }
-        return totalIncome;
     }
 
     public ArrayList<Integer> ConfigurePieChartColors(Fragment fragment)
@@ -91,7 +71,7 @@ public class HomeViewModel extends ViewModel {
 
     public void DrawChart(View root, Fragment fragment, double totalIncome, double totalExpense)
     {
-        pieChartHome = root.findViewById(R.id.pieChartHome);
+        PieChart pieChartHome = root.findViewById(R.id.pieChartHome);
         List<PieEntry> chartData = new ArrayList<>();
 
         chartData.add(new PieEntry((int) totalIncome, "Income"));
