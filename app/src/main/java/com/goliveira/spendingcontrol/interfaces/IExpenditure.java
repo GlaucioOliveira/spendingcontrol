@@ -13,6 +13,7 @@ public interface IExpenditure {
 
     String getRecyclerViewDescription();
 
-    void save();
+    String getCreatedAt();
 
+    void save();
 }

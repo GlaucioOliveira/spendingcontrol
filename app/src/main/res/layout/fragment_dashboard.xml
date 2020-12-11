@@ -5,9 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.dashboard.DashboardFragment">
-
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/listaRegistros"
+        android:id="@+id/transactionsList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"

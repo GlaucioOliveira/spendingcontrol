@@ -9,9 +9,8 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 import com.goliveira.spendingcontrol.R;
 import com.goliveira.spendingcontrol.interfaces.IExpenditure;
-import com.goliveira.spendingcontrol.model.Income;
+
 import java.util.ArrayList;
-import java.util.List;
 
 public class ExpenditureAdapter extends RecyclerView.Adapter<ExpenditureAdapter.ExpenditureAdapterViewHolder> {
 
@@ -20,13 +19,13 @@ public class ExpenditureAdapter extends RecyclerView.Adapter<ExpenditureAdapter.
     // ViewHolders cache the references to the views that will be modified in the adapter.
     public class ExpenditureAdapterViewHolder extends RecyclerView.ViewHolder {
 
-        TextView listItemNumberView = (TextView) itemView.findViewById(R.id.recycler_view_item_text);
+        TextView listItemNumberView = (TextView) itemView.findViewById(R.id.transactionDescription);
 
 
         // Create a constructor that accepts a View called itemView as a parameter
         public ExpenditureAdapterViewHolder(View itemView) {
             super(itemView);
-            listItemNumberView = (TextView) itemView.findViewById(R.id.recycler_view_item_text);
+            listItemNumberView = (TextView) itemView.findViewById(R.id.transactionDescription);
         }
     }
 
