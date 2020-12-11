@@ -5,10 +5,14 @@ import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModel;
 
+import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
 import com.goliveira.spendingcontrol.R;
 import com.goliveira.spendingcontrol.model.Expense;
 import com.goliveira.spendingcontrol.model.Income;
@@ -19,28 +23,36 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class HomeViewModel extends ViewModel {
 
     private final String currentUserUid = FirebaseAuth.getInstance().getUid();
-    private MutableLiveData<String> mText;
+    private PieChart pieChartHome;
+
 
     public HomeViewModel() {
-        mText = new MutableLiveData<>();
-        mText.setValue("This is home fragment");
+
     }
 
-    public LiveData<String> getText() {
-        return mText;
-    }
 
-    public void DisplayFirebaseData (View root) {
+    public void DisplayFirebaseData (View root, Fragment fragment) {
         DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference().child("users").child(currentUserUid);
         dbRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                calculateTodayExpense(dataSnapshot, root);
-                calculateTodayIncome(dataSnapshot, root);
-                TextView expenseTodayValue =  root.findViewById(R.id.txtMonthDate);
+
+                double totalExpense = calculateExpense(dataSnapshot);
+                TextView expenseTodayValue =  root.findViewById(R.id.expenseTodayValue);
+                expenseTodayValue.setText( "$ " + totalExpense);
+
+                double totalIncome = calculateIncome(dataSnapshot);
+                TextView todayIncomeValue =  root.findViewById(R.id.todayIncomeValue);
+                todayIncomeValue.setText( "$ " + totalIncome);
+
+                DrawChart(root, fragment, totalIncome, totalExpense);
+
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
@@ -49,24 +61,49 @@ public class HomeViewModel extends ViewModel {
         });
     }
 
-    private void calculateTodayExpense (DataSnapshot dataSnapshot, View root) {
-        double totalExpense = 0;
+    private double calculateExpense (DataSnapshot dataSnapshot) {
+        double totalExpense = 0.00;
         for (DataSnapshot ds : dataSnapshot.child("expenses").getChildren()) {
             Expense expense = ds.getValue(Expense.class);
             totalExpense = totalExpense + expense.getAmount();
         }
-        TextView expenseTodayValue =  root.findViewById(R.id.expenseTodayValue);
-        expenseTodayValue.setText( "$ " + (int) totalExpense);
+        return totalExpense;
     }
 
-    private void calculateTodayIncome (DataSnapshot dataSnapshot, View root) {
-        double totalIncome = 0;
+    private double calculateIncome(DataSnapshot dataSnapshot) {
+        double totalIncome = 0.00;
         for (DataSnapshot ds : dataSnapshot.child("incomes").getChildren()) {
             Income income = ds.getValue(Income.class);
             totalIncome = totalIncome + income.getAmount();
         }
-        TextView todayIncomeValue =  root.findViewById(R.id.todayIncomeValue);
-        todayIncomeValue.setText( "$ " + (int) totalIncome);
+        return totalIncome;
+    }
+
+    public ArrayList<Integer> ConfigurePieChartColors(Fragment fragment)
+    {
+        ArrayList<Integer> chartColors = new ArrayList<>();
+
+        chartColors.add(ContextCompat.getColor(fragment.getContext(), R.color.income_color));
+        chartColors.add(ContextCompat.getColor(fragment.getContext(), R.color.expense_color));
+
+        return chartColors;
+    }
+
+    public void DrawChart(View root, Fragment fragment, double totalIncome, double totalExpense)
+    {
+        pieChartHome = root.findViewById(R.id.pieChartHome);
+        List<PieEntry> chartData = new ArrayList<>();
+
+        chartData.add(new PieEntry((int) totalIncome, "Income"));
+        chartData.add(new PieEntry((int) totalExpense, "Expense"));
+
+        PieDataSet pieDataSet = new PieDataSet(chartData, "Budget");
+
+        pieDataSet.setColors(ConfigurePieChartColors(fragment));
+        PieData pieData = new PieData(pieDataSet);
+
+        pieChartHome.setData(pieData);
+        pieChartHome.invalidate();
     }
 
 }

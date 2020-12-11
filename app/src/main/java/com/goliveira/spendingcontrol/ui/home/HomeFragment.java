@@ -14,23 +14,16 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
-import com.github.mikephil.charting.charts.PieChart;
-import com.github.mikephil.charting.data.PieData;
-import com.github.mikephil.charting.data.PieDataSet;
-import com.github.mikephil.charting.data.PieEntry;
 import com.goliveira.spendingcontrol.R;
 import com.goliveira.spendingcontrol.ui.dialogs.MonthYearPickerDialog;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 public class HomeFragment extends Fragment {
 
@@ -38,7 +31,6 @@ public class HomeFragment extends Fragment {
     private Button btnAddIncome;
     private Button btnAddOutcome;
     private EditText txtMonthDate;
-    private PieChart pieChartHome;
     SimpleDateFormat sdf = new SimpleDateFormat("MMM yyyy");
     SimpleDateFormat dateInput = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -46,7 +38,6 @@ public class HomeFragment extends Fragment {
     {
         btnAddIncome = root.findViewById(R.id.btnAddIncome);
         btnAddOutcome = root.findViewById(R.id.btnAddExpense);
-        pieChartHome = root.findViewById(R.id.pieChartHome);
         txtMonthDate = root.findViewById(R.id.txtMonthDate);
     }
 
@@ -66,31 +57,6 @@ public class HomeFragment extends Fragment {
             }
         });
 
-    }
-
-    public ArrayList<Integer> ConfigurePieChartColors()
-    {
-        ArrayList<Integer> chartColors = new ArrayList<>();
-
-        chartColors.add(ContextCompat.getColor(this.getContext(), R.color.income_color));
-        chartColors.add(ContextCompat.getColor(this.getContext(), R.color.expense_color));
-
-        return chartColors;
-    }
-
-    public void DrawChart(View root)
-    {
-        List<PieEntry> chartData = new ArrayList<>();
-
-        chartData.add(new PieEntry(80, "Income"));
-        chartData.add(new PieEntry(20, "Expense"));
-
-        PieDataSet pieDataSet = new PieDataSet(chartData, "Budget");
-
-        pieDataSet.setColors(ConfigurePieChartColors());
-        PieData pieData = new PieData(pieDataSet);
-
-        pieChartHome.setData(pieData);
     }
 
     public void ConfigureDateTimePicker(View root)
@@ -133,8 +99,7 @@ public class HomeFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_home, container, false);
         LoadFragmentViews(root);
         LoadFragmentButtonListeners();
-        DrawChart(root);
-        homeViewModel.DisplayFirebaseData(root);
+        homeViewModel.DisplayFirebaseData(root, this);
         ConfigureDateTimePicker(root);
 
         return root;

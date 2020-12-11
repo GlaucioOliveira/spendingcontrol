@@ -27,26 +27,31 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:baselineAligned="false"
                     android:orientation="horizontal"
                     android:paddingTop="12dp">
 
                     <androidx.constraintlayout.widget.ConstraintLayout
-                        android:layout_width="297dp"
+                        android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="1">
+                        android:layout_weight="1"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintStart_toStartOf="parent">
 
                         <EditText
                             android:id="@+id/txtMonthDate"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:autofillHints=""
                             android:clickable="true"
                             android:drawableEnd="@drawable/ic_baseline_calendar_today_24"
                             android:ems="10"
                             android:focusable="false"
                             android:foregroundGravity="fill_horizontal"
+                            android:hint="@string/select_date"
                             android:inputType="date"
-                            android:text="Nov 2020"
                             android:textAlignment="center"
                             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                             android:textStyle="bold"
@@ -59,112 +64,105 @@
                 </LinearLayout>
 
 
-                <LinearLayout
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="41dp"
-                    android:orientation="horizontal">
+                    android:layout_height="wrap_content">
 
                     <TextView
-                        android:id="@+id/textView2"
-                        android:layout_width="107dp"
-                        android:layout_height="23dp"
-                        android:layout_marginStart="12dp"
-                        android:layout_marginTop="8dp"
-                        android:text="Day Incomes"
-                        android:textColor="@color/income_color" />
-
-                    <TextView
-                        android:id="@+id/todayIncomeValue"
-                        android:layout_width="75dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="12dp"
-                        android:layout_marginTop="8dp"
-                        android:text="$ 35.00" />
-
-                    <TextView
-                        android:id="@+id/textView"
-                        android:layout_width="107dp"
-                        android:layout_height="22dp"
-                        android:layout_marginStart="12dp"
-                        android:layout_marginTop="8dp"
-                        android:text="Day Outcomes"
-                        android:textColor="@color/expense_color" />
-
-                    <TextView
-                        android:id="@+id/expenseTodayValue"
-                        android:layout_width="66dp"
-                        android:layout_height="19dp"
-                        android:layout_marginStart="12dp"
-                        android:layout_marginTop="8dp"
-                        android:text="$ 0.00" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="41dp"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/textView3"
-                        android:layout_width="107dp"
-                        android:layout_height="23dp"
-                        android:layout_marginStart="12dp"
-                        android:layout_marginTop="8dp"
-                        android:text="Month Income"
-                        android:textColor="@color/income_color" />
-
-                    <TextView
-                        android:id="@+id/textView8"
-                        android:layout_width="74dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="12dp"
-                        android:layout_marginTop="8dp"
-                        android:text="$ 820.00" />
-
-
-                    <TextView
-                        android:id="@+id/textView4"
+                        android:id="@+id/txtAccountBalanceValue"
                         android:layout_width="wrap_content"
-                        android:layout_height="22dp"
-                        android:layout_marginStart="12dp"
-                        android:layout_marginTop="8dp"
-                        android:text="Month Outcomes"
-                        android:textColor="@color/expense_color" />
-
-                    <TextView
-                        android:id="@+id/textView5"
-                        android:layout_width="91dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="12dp"
-                        android:layout_marginTop="8dp"
-                        android:text="$ 850.00" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                        android:text="@string/zero_balance"
+                        android:textAlignment="center"
+                        android:textSize="36sp"
+                        app:layout_constraintBottom_toTopOf="@+id/textViewAccountBalance"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.498"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="0.719" />
 
                     <TextView
                         android:id="@+id/textViewAccountBalance"
                         android:layout_width="wrap_content"
                         android:layout_height="23dp"
-                        android:layout_marginStart="12dp"
-                        android:layout_marginTop="8dp"
-                        android:text="Account Balance"
-                        android:textStyle="bold" />
+                        android:text="@string/account_balance"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.498"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="1.0" />
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="65dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/todayIncomeValue"
+                    app:layout_constraintTop_toBottomOf="@+id/todayIncomeValue">
+
 
                     <TextView
-                        android:id="@+id/txtAccountBalanceValue"
-                        android:layout_width="74dp"
+                        android:id="@+id/todayIncomeValue"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="12dp"
-                        android:layout_marginTop="8dp"
-                        android:text="($ 30.00)"
-                        android:textColor="@color/expense_color" />
-                </LinearLayout>
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="4dp"
+                        android:text="@string/zero_balance"
+                        android:textAlignment="center"
+                        android:textSize="24sp"
+                        app:layout_constraintBottom_toTopOf="@+id/labelIncomes"
+                        app:layout_constraintEnd_toEndOf="@+id/labelIncomes"
+                        app:layout_constraintStart_toStartOf="@+id/labelIncomes"
+                        app:layout_constraintTop_toTopOf="parent" />
 
+                    <TextView
+                        android:id="@+id/expenseTodayValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="4dp"
+                        android:text="@string/zero_balance"
+                        android:textAlignment="center"
+                        android:textSize="24sp"
+                        app:layout_constraintBottom_toTopOf="@+id/labelExpenses"
+                        app:layout_constraintEnd_toEndOf="@+id/labelExpenses"
+                        app:layout_constraintStart_toStartOf="@+id/labelExpenses"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/labelExpenses"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="64dp"
+                        android:layout_marginBottom="6dp"
+                        android:text="@string/expenses"
+                        android:textAlignment="center"
+                        android:textColor="@color/expense_color"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent" />
+
+                    <TextView
+                        android:id="@+id/labelIncomes"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="64dp"
+                        android:layout_marginBottom="6dp"
+                        android:text="@string/incomes"
+                        android:textAlignment="center"
+                        android:textColor="@color/income_color"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <com.github.mikephil.charting.charts.PieChart
                     android:id="@+id/pieChartHome"
@@ -173,38 +171,38 @@
 
                 </com.github.mikephil.charting.charts.PieChart>
 
-                <LinearLayout
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:paddingLeft="15dp"
-                    android:paddingRight="15dp">
+                    android:layout_height="match_parent">
 
                     <Button
                         android:id="@+id/btnAddExpense"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="40dp"
+                        android:layout_marginTop="16dp"
                         android:layout_weight="1"
                         android:backgroundTint="@color/expense_color"
-                        android:paddingRight="12dp"
-                        android:text="Add Expense"
-                        app:icon="@drawable/add_income_money" />
-
-                    <Space
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1" />
+                        android:text="@string/add_expense"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                        app:icon="@drawable/add_income_money"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <Button
                         android:id="@+id/btnAddIncome"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginEnd="40dp"
                         android:layout_weight="1"
                         android:backgroundTint="@color/income_color"
-                        android:text="Add Income"
-                        app:icon="@drawable/add_income_money" />
-
-                </LinearLayout>
+                        android:text="@string/add_income"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                        app:icon="@drawable/add_income_money"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
