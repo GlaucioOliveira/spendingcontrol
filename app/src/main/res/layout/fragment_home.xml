@@ -174,36 +174,33 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
-
                     <Button
                         android:id="@+id/btnAddExpense"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="40dp"
-                        android:layout_marginTop="16dp"
-                        android:layout_weight="1"
-                        android:backgroundTint="@color/expense_color"
-                        android:text="@string/add_expense"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                        app:icon="@drawable/add_income_money"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <Button
-                        android:id="@+id/btnAddIncome"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
                         android:layout_marginEnd="40dp"
                         android:layout_weight="1"
-                        android:backgroundTint="@color/income_color"
-                        android:text="@string/add_income"
+                        android:backgroundTint="@color/expense_color"
+                        android:text="@string/add_expense"
                         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                         app:icon="@drawable/add_income_money"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
+                    <Button
+                        android:id="@+id/btnAddIncome"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="40dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_weight="1"
+                        android:backgroundTint="@color/income_color"
+                        android:text="@string/add_income"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                        app:icon="@drawable/add_income_money"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
-
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
     </FrameLayout>

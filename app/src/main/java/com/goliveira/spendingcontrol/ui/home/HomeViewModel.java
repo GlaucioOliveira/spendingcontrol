@@ -48,6 +48,9 @@ public class HomeViewModel extends ViewModel {
                 TextView todayIncomeValue = root.findViewById(R.id.todayIncomeValue);
                 todayIncomeValue.setText("$ " + totalIncome);
 
+                TextView balanceValue = root.findViewById(R.id.txtAccountBalanceValue);
+                balanceValue.setText("$ " +(totalIncome - totalExpense));
+
                 DrawChart(root, fragment, totalIncome, totalExpense);
             }
             @Override
