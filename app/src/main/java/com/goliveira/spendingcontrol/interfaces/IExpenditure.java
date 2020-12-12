@@ -1,19 +1,36 @@
 package com.goliveira.spendingcontrol.interfaces;
 
+import com.goliveira.spendingcontrol.model.Transaction;
+import com.goliveira.spendingcontrol.model.TransactionType;
+import com.google.firebase.database.DataSnapshot;
+
 public interface IExpenditure {
 
-    String getCategory();
-    void setCategory(String category);
+    public TransactionType getType();
 
-    String getDescription();
-    void setDescription(String category);
+    public void setType(TransactionType type);
 
-    int getAmount();
-    void setAmount(int category);
+    public double getAmount();
 
-    String getRecyclerViewDescription();
+    public void setAmount(double amount);
 
-    String getCreatedAt();
+    public String getDate();
+
+    public void setDate(String date);
+
+    public String getCategory();
+
+    public void setCategory(String category);
+
+    public String getDescription();
+
+    public void setDescription(String description);
+
+    public String getCreatedAt();
+
+    public String getCreatedBy();
+
+    public String getCreatedByName();
 
     void save();
 }

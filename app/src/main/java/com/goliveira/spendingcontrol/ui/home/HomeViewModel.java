@@ -35,24 +35,37 @@ public class HomeViewModel extends ViewModel {
     private final String TAG = "DashboardFragment";
 
     public void DisplayFirebaseData (View root, Fragment fragment) {
-        DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference().child("users").child(FirebaseAuth.getInstance().getUid());
-        dbRef.addChildEventListener(new ChildEventListener() {
+        DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference().child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        dbRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+            public void onDataChange(DataSnapshot dataSnapshot) {
 
-            }
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                double totalExpense = Transaction.calculateTotal(snapshot, TransactionType.EXPENSE);
-                TextView expenseTodayValue =  root.findViewById(R.id.expenseTodayValue);
-                expenseTodayValue.setText( fragment.getActivity().getString(R.string.currency) + totalExpense);
+                double totalExpense = Transaction.calculateTotal(dataSnapshot, TransactionType.EXPENSE);
+                TextView expenseTodayValue = root.findViewById(R.id.expenseTodayValue);
+                expenseTodayValue.setText("$ " + totalExpense);
+                expenseTodayValue.setText(fragment.getActivity().getString(R.string.currency) + totalExpense);
 
-                double totalIncome = Transaction.calculateTotal(snapshot, TransactionType.INCOME);
-                TextView todayIncomeValue =  root.findViewById(R.id.todayIncomeValue);
-                todayIncomeValue.setText( fragment.getActivity().getString(R.string.currency) + + totalIncome);
+                double totalIncome = Transaction.calculateTotal(dataSnapshot, TransactionType.INCOME);
+                TextView todayIncomeValue = root.findViewById(R.id.todayIncomeValue);
+                todayIncomeValue.setText("$ " + totalIncome);
+                todayIncomeValue.setText(fragment.getActivity().getString(R.string.currency) + +totalIncome);
 
                 DrawChart(root, fragment, totalIncome, totalExpense);
             }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.d(TAG, "Error fetching database");
+            }
+        });
+        /*
+        dbRef.child("transactions").addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                Transaction transaction =  snapshot.getValue(Transaction.class);
+                System.out.println(transaction.getAmount());
+            }
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {}
             @Override
             public void onChildRemoved(@NonNull DataSnapshot snapshot) {}
             @Override
@@ -62,6 +75,7 @@ public class HomeViewModel extends ViewModel {
                 Log.d(TAG, "Error fetching database");
             }
         });
+        */
     }
 
     public ArrayList<Integer> ConfigurePieChartColors(Fragment fragment)
@@ -90,5 +104,4 @@ public class HomeViewModel extends ViewModel {
         pieChartHome.setData(pieData);
         pieChartHome.invalidate();
     }
-
 }

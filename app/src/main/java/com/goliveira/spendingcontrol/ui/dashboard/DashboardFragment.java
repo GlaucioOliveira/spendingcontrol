@@ -46,11 +46,16 @@ public class DashboardFragment extends Fragment {
 
         transactionsList.setLayoutManager(new LinearLayoutManager(root.getContext()));
 
-        DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference().child("users").child(currentUserUid);
+        ArrayList<IExpenditure> expenditures  = new ArrayList<>();
+        transactionsList.setHasFixedSize(true);
+
+        DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference().child("users").child(currentUserUid).child("transactions");
         dbRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
+                Transaction transaction =  snapshot.getValue(Transaction.class);
+                expenditures.add(transaction);
+                transactionsList.setAdapter(new ExpenditureAdapter(root.getContext(), expenditures.size(), expenditures));
             }
 
             @Override
@@ -68,10 +73,7 @@ public class DashboardFragment extends Fragment {
             }
         });
 
-        ArrayList<IExpenditure> expenditures = BudgetList.getInstance().budget;
 
-        transactionsList.setHasFixedSize(true);
-        transactionsList.setAdapter(new ExpenditureAdapter(root.getContext(), 3, expenditures));
 
         return root;
     }
