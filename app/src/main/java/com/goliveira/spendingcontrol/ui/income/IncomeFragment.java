@@ -145,7 +145,7 @@ public class IncomeFragment extends Fragment {
             Transaction income = new Transaction();
             income.setType(TransactionType.INCOME);
             income.setDescription(incomeDescription.getText().toString());
-            income.setAmount(GetInt(incomeAmount.getText().toString()));
+            income.setAmount(GetDouble(incomeAmount.getText().toString()));
             income.setDate(incomeDate.getText().toString());
             try {
                 Date dateUnix = new SimpleDateFormat("dd-MM-yyyy").parse(incomeDate.getText().toString());
@@ -215,7 +215,7 @@ public class IncomeFragment extends Fragment {
         }
     }
 
-    public int GetInt(String s){
-        return Integer.parseInt(s.replaceAll("[\\D]", ""));
+    public double GetDouble(String s){
+        return Double.parseDouble(s);
     }
 }

@@ -147,7 +147,7 @@ public class ExpenseFragment extends Fragment {
             Transaction expense = new Transaction();
             expense.setType(TransactionType.EXPENSE);
             expense.setDescription(expenseDescription.getText().toString());
-            expense.setAmount(GetInt(expenseAmount.getText().toString()));
+            expense.setAmount(GetDouble(expenseAmount.getText().toString()));
             expense.setDate(expenseDate.getText().toString());
             try {
                 Date dateUnix = new SimpleDateFormat("dd-MM-yyyy").parse(expenseDate.getText().toString());
@@ -218,7 +218,9 @@ public class ExpenseFragment extends Fragment {
     }
 
 
-    public int GetInt(String s) {
-        return Integer.parseInt(s.replaceAll("[\\D]", ""));
+
+    public double GetDouble(String s){
+        return Double.parseDouble(s);
     }
+
 }

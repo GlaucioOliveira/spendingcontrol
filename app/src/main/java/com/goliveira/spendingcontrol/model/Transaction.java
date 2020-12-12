@@ -67,10 +67,10 @@ public class Transaction implements IExpenditure {
 
     public String getMessageForBuddyNotification(){
         if(getType() == TransactionType.EXPENSE){
-            return createdByName + " just expent " + getAmount() + ".";
+            return createdByName + " just expent " + getAmount() + " with " + getCategory() + ".";
         }
         else{
-            return createdByName + " received " + getAmount() + ".";
+            return createdByName + " received " + getAmount() + " with " + getCategory() + ".";
         }
     }
 
