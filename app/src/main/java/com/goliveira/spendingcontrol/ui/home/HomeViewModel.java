@@ -43,12 +43,10 @@ public class HomeViewModel extends ViewModel {
                 double totalExpense = Transaction.calculateTotal(dataSnapshot, TransactionType.EXPENSE);
                 TextView expenseTodayValue = root.findViewById(R.id.expenseTodayValue);
                 expenseTodayValue.setText("$ " + totalExpense);
-                expenseTodayValue.setText(fragment.getActivity().getString(R.string.currency) + totalExpense);
 
                 double totalIncome = Transaction.calculateTotal(dataSnapshot, TransactionType.INCOME);
                 TextView todayIncomeValue = root.findViewById(R.id.todayIncomeValue);
                 todayIncomeValue.setText("$ " + totalIncome);
-                todayIncomeValue.setText(fragment.getActivity().getString(R.string.currency) + +totalIncome);
 
                 DrawChart(root, fragment, totalIncome, totalExpense);
             }

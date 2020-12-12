@@ -25,10 +25,19 @@ import androidx.navigation.Navigation;
 import com.goliveira.spendingcontrol.R;
 import com.goliveira.spendingcontrol.model.Transaction;
 import com.goliveira.spendingcontrol.model.TransactionType;
+import com.goliveira.spendingcontrol.model.User;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -41,6 +50,7 @@ public class ExpenseFragment extends Fragment {
     private FloatingActionButton btnAddExpense;
     private EditText expenseDate;
     private final String TAG = "Expense Fragment";
+    private User user;
 
     public ExpenseFragment() {
         // Required empty public constructor
@@ -86,7 +96,7 @@ public class ExpenseFragment extends Fragment {
                 expenseCalendar.set(Calendar.YEAR, year);
                 expenseCalendar.set(Calendar.MONTH, monthOfYear);
                 expenseCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
                 expenseDate.setText(dateFormat.format(expenseCalendar.getTime()));
             }
         };
@@ -100,40 +110,63 @@ public class ExpenseFragment extends Fragment {
 
         btnAddExpense = root.findViewById(R.id.btnSubmitExpense);
 
-        btnAddExpense.setOnClickListener(new View.OnClickListener() {
+        DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference().child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        dbRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onClick(View view) {
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                user = dataSnapshot.getValue(User.class);
 
-                EditText expenseAmount = root.findViewById(R.id.expenseAmount);
-                EditText expenseDate = root.findViewById(R.id.expenseCreatedAt);
-                EditText expenseDescription = root.findViewById(R.id.expenseDescription);
-                Spinner expenseCategory = root.findViewById(R.id.expenseCategory);
-                // validate fields
-                if(checkIsEmpty(expenseAmount) || checkIsEmpty(expenseDate) || checkSelect(expenseCategory) || checkIsEmpty(expenseDescription)){
-                    return;
+                String[] arraySpinner = new String[]{user.getDisplayName(), user.getBuddyName()};
+                Spinner expenseWallet = root.findViewById(R.id.expenseWallet);
+                ArrayAdapter<String> adapterExpenseWallet = new ArrayAdapter<>(root.getContext(), android.R.layout.simple_spinner_item, arraySpinner);
+                adapterExpenseWallet.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                expenseWallet.setAdapter(adapterExpenseWallet);
+                if(user.isHasBuddy()){
+                    expenseWallet.setVisibility(View.VISIBLE);
                 }
-                Transaction expense = new Transaction();
-                expense.setType(TransactionType.EXPENSE);
-                expense.setDescription(expenseDescription.getText().toString());
-                expense.setAmount(GetInt(expenseAmount.getText().toString()));
-                expense.setDate(expenseDate.getText().toString());
-                expense.setCategory(expenseCategory.getSelectedItem().toString());
-
-                expense.save();
-
-                // TODO: replace BudgetList with firebase data
-                //BudgetList.getInstance().budget.add(expense);
-
-                Navigation.findNavController(view).popBackStack(); //goes to the previous fragment
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.d(TAG, "Error fetching database");
             }
         });
 
-        Spinner spinner = root.findViewById(R.id.expenseCategory);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(root.getContext(), R.array.expense_categories, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
+        btnAddExpense.setOnClickListener(view -> {
 
+            EditText expenseAmount = root.findViewById(R.id.expenseAmount);
+            EditText expenseDate = root.findViewById(R.id.expenseCreatedAt);
+            EditText expenseDescription = root.findViewById(R.id.expenseDescription);
+            Spinner expenseCategory = root.findViewById(R.id.expenseCategory);
+            Spinner expenseWallet = root.findViewById(R.id.expenseWallet);
+            // validate fields
+            if(checkIsEmpty(expenseAmount) || checkIsEmpty(expenseDate) || checkSelect(expenseCategory) || checkIsEmpty(expenseDescription)){
+                return;
+            }
+            Transaction expense = new Transaction();
+            expense.setType(TransactionType.EXPENSE);
+            expense.setDescription(expenseDescription.getText().toString());
+            expense.setAmount(GetInt(expenseAmount.getText().toString()));
+            expense.setDate(expenseDate.getText().toString());
+            try {
+                Date dateUnix = new SimpleDateFormat("dd-MM-yyyy").parse(expenseDate.getText().toString());
+                expense.setDateUnix(dateUnix.getTime());
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            if(user.isHasBuddy() && TextUtils.equals(expenseWallet.getSelectedItem().toString(), user.getBuddyName())){
+                expense.setWallet(user.getBuddy());
+            } else {
+                expense.setWallet(user.getUid());
+            }
+            expense.setCategory(expenseCategory.getSelectedItem().toString());
+            expense.save();
+            Navigation.findNavController(view).popBackStack(); //goes to the previous fragment
+        });
+
+        Spinner spinner = root.findViewById(R.id.expenseCategory);
+        ArrayAdapter<CharSequence> adapterExpenseCategory = ArrayAdapter.createFromResource(root.getContext(), R.array.expense_categories, android.R.layout.simple_spinner_item);
+        adapterExpenseCategory.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapterExpenseCategory);
         //setting the date field
         setDateTimePicker(root);
 

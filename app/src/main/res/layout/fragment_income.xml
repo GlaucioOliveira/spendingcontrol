@@ -59,6 +59,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/incomeCategory" />
 
+    <Spinner
+        android:id="@+id/incomeWallet"
+        android:layout_width="363dp"
+        android:layout_height="51dp"
+        android:layout_marginTop="28dp"
+        android:spinnerMode="dropdown"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/incomeDescription" />
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/btnSubmitIncome"
         android:layout_width="wrap_content"
@@ -73,6 +84,6 @@
         android:tint="@color/white"
         app:backgroundTint="@color/income_color"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/incomeDescription" />
+        app:layout_constraintTop_toBottomOf="@+id/incomeWallet" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

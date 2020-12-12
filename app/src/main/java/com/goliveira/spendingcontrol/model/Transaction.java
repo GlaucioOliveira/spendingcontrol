@@ -16,8 +16,10 @@ public class Transaction implements IExpenditure {
     private TransactionType type;
     private double amount = 0.00;
     private String date = "";
+    private Long dateUnix;
     private String category = "";
     private String description = "";
+    private String wallet = "";
     // timestamps
     private String createdAt = "";
     private final String createdBy = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -40,6 +42,10 @@ public class Transaction implements IExpenditure {
 
     public void setDate(String date) { this.date = date; }
 
+    public Long getDateUnix() { return dateUnix; }
+
+    public void setDateUnix(Long dateUnix) { this.dateUnix = dateUnix; }
+
     public String getCategory() { return category; }
 
     public void setCategory(String category) { this.category = category; }
@@ -47,6 +53,10 @@ public class Transaction implements IExpenditure {
     public String getDescription() { return description; }
 
     public void setDescription(String description) { this.description = description; }
+
+    public String getWallet() { return wallet; }
+
+    public void setWallet(String wallet) { this.wallet = wallet; }
 
     public String getCreatedAt() { return createdAt; }
 
