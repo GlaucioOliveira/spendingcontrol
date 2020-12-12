@@ -67,7 +67,13 @@ public class Transaction implements IExpenditure {
     public void save() {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference databaseRef = database.getReference();
-        databaseRef.child("users").child(getCreatedBy()).child("transactions").push().setValue(this);
+        String localWallet;
+        if(!getWallet().equals("")){
+            localWallet = getWallet();
+        } else{
+            localWallet = getCreatedBy();
+        }
+        databaseRef.child("users").child(localWallet).child("transactions").push().setValue(this);
     }
 
     public static double calculateTotal(@NotNull DataSnapshot dataSnapshot, TransactionType type) {

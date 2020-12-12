@@ -32,5 +32,13 @@ public interface IExpenditure {
 
     public String getCreatedByName();
 
+    public String getWallet();
+
+    public void setWallet(String wallet);
+
+    public Long getDateUnix();
+
+    public void setDateUnix(Long dateUnix);
+
     void save();
 }
