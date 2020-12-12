@@ -1,6 +1,7 @@
 package com.goliveira.spendingcontrol.model;
 
 import com.goliveira.spendingcontrol.interfaces.IExpenditure;
+import com.goliveira.spendingcontrol.notification.PushNotificationAsync;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
@@ -63,6 +64,15 @@ public class Transaction implements IExpenditure {
     public String getCreatedBy() { return createdBy; }
 
     public String getCreatedByName() { return createdByName; }
+
+    public String getMessageForBuddyNotification(){
+        if(getType() == TransactionType.EXPENSE){
+            return createdByName + " just expent " + getAmount() + ".";
+        }
+        else{
+            return createdByName + " received " + getAmount() + ".";
+        }
+    }
 
     public void save() {
         FirebaseDatabase database = FirebaseDatabase.getInstance();

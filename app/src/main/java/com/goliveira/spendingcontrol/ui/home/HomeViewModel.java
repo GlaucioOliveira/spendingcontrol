@@ -1,5 +1,7 @@
 package com.goliveira.spendingcontrol.ui.home;
 
+import android.content.SharedPreferences;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
@@ -17,6 +19,7 @@ import com.github.mikephil.charting.data.PieEntry;
 import com.goliveira.spendingcontrol.R;
 import com.goliveira.spendingcontrol.model.Transaction;
 import com.goliveira.spendingcontrol.model.TransactionType;
+import com.goliveira.spendingcontrol.model.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -28,17 +31,25 @@ import com.google.firebase.database.ValueEventListener;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+
+import static android.content.Context.MODE_PRIVATE;
 
 public class HomeViewModel extends ViewModel {
 
     private final String TAG = "DashboardFragment";
+    private SharedPreferences sharedPreferences;
 
     public void DisplayFirebaseData (View root, Fragment fragment) {
         DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference().child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
         dbRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                User userObject = dataSnapshot.getValue(User.class);
+
+                UpdateBuddyInformation(userObject);
 
                 double totalExpense = Transaction.calculateTotal(dataSnapshot, TransactionType.EXPENSE);
                 TextView expenseTodayValue = root.findViewById(R.id.expenseTodayValue);
@@ -77,6 +88,21 @@ public class HomeViewModel extends ViewModel {
             }
         });
         */
+    }
+
+    public void setSharedPreferences(SharedPreferences sharedPreferences)
+    {
+        this.sharedPreferences = sharedPreferences;
+    }
+
+    private void UpdateBuddyInformation(User userObject) {
+        if(TextUtils.isEmpty(userObject.getBuddy()) == false && sharedPreferences != null)
+        {
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+
+            editor.putString("BUDDY_ID", userObject.getBuddy());
+            editor.commit();
+        }
     }
 
     public ArrayList<Integer> ConfigurePieChartColors(Fragment fragment)

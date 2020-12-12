@@ -6,7 +6,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Paint;
+import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -34,6 +37,7 @@ public class SignUpActivity extends AppCompatActivity {
     EditText signUpDisplayNameTextInput;
     CheckBox agreementCheckBox;
     TextView errorView;
+    TextView lnkTermsAndConditions;
 
     private void ToastError(String message) {
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
@@ -50,11 +54,21 @@ public class SignUpActivity extends AppCompatActivity {
         LoadFragmentViews();
 
         LoadFragmentButtonListeners();
+
+        TryToRecoverEmailInput();
+    }
+
+    private void TryToRecoverEmailInput(){
+        String userEmail = getIntent().getStringExtra("USER_EMAIL");
+
+        if(TextUtils.isEmpty(userEmail) == false){
+            signUpEmailTextInput.setText(userEmail);
+        }
     }
 
     private boolean ValidateActivity() {
         if (signUpDisplayNameTextInput.getText().toString().contentEquals("")) {
-            ToastError("Email can't be empty");
+            ToastError("You need yo time your name");
             return false;
         }
 
@@ -83,6 +97,33 @@ public class SignUpActivity extends AppCompatActivity {
         signUpButton = findViewById(R.id.signUpButton);
         agreementCheckBox = findViewById(R.id.agreementCheckbox);
         errorView = findViewById(R.id.signUpErrorView);
+
+        lnkTermsAndConditions = findViewById(R.id.lnkTermsAndConditions);
+        lnkTermsAndConditions.setPaintFlags(lnkTermsAndConditions.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+    }
+
+    private void LoadFragmentButtonListeners() {
+        signUpButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if (ValidateActivity() == false) return;
+
+                String email = signUpEmailTextInput.getText().toString();
+                String password = signUpPasswordTextInput.getText().toString();
+                String displayName = signUpDisplayNameTextInput.getText().toString();
+
+                FireBaseSignUp(email, password, displayName);
+            }
+        });
+
+        lnkTermsAndConditions.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://goliveira.com/spendingcontrol/policies.html"));
+                startActivity(browserIntent);
+            }
+        });
     }
 
     private void FireBaseSignUp(String email, String password, String displayName) {
@@ -95,18 +136,18 @@ public class SignUpActivity extends AppCompatActivity {
                     FirebaseUser user = mAuth.getCurrentUser();
 
                     UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                    .setDisplayName(displayName)
-                    .build();
+                            .setDisplayName(displayName)
+                            .build();
 
                     user.updateProfile(profileUpdates)
-                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isSuccessful()) {
-                                Log.d(TAG, "User profile updated.");
-                            }
-                        }
-                    });
+                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        Log.d(TAG, "User profile updated.");
+                                    }
+                                }
+                            });
                     try {
                         if (user != null)
                             user.sendEmailVerification()
@@ -156,22 +197,6 @@ public class SignUpActivity extends AppCompatActivity {
             }
         });
 
-    }
-
-    private void LoadFragmentButtonListeners() {
-        signUpButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                if (ValidateActivity() == false) return;
-
-                String email = signUpEmailTextInput.getText().toString();
-                String password = signUpPasswordTextInput.getText().toString();
-                String displayName = signUpDisplayNameTextInput.getText().toString();
-
-                FireBaseSignUp(email, password, displayName);
-            }
-        });
     }
 
 }

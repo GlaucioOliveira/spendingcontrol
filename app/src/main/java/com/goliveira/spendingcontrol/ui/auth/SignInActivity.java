@@ -21,6 +21,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.onesignal.OneSignal;
+
+import greco.lorenzo.com.lgsnackbar.LGSnackbarManager;
+import greco.lorenzo.com.lgsnackbar.style.LGSnackBarTheme;
+import greco.lorenzo.com.lgsnackbar.style.LGSnackBarThemeManager;
 
 public class SignInActivity extends AppCompatActivity {
 
@@ -58,6 +63,10 @@ public class SignInActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        LGSnackbarManager.prepare(getApplicationContext(),
+                LGSnackBarThemeManager.LGSnackbarThemeName.SHINE);
+
         setContentView(R.layout.activity_sign_in);
 
         mAuth = FirebaseAuth.getInstance();
@@ -96,18 +105,23 @@ public class SignInActivity extends AppCompatActivity {
         forgotPasswordButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                String email = emailTextInput.getText().toString();
 
                 Intent forgotPasswordActivity = new Intent(SignInActivity.this, ForgotPasswordActivity.class);
-                startActivity(forgotPasswordActivity);
-                SignInActivity.this.finish();
+                forgotPasswordActivity.putExtra("USER_EMAIL" , email);
 
+                startActivity(forgotPasswordActivity);
             }
         });
 
         signUpButtom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                String email = emailTextInput.getText().toString();
+
                 Intent signUpIntent = new Intent(SignInActivity.this, SignUpActivity.class);
+                signUpIntent.putExtra("USER_EMAIL" , email);
+
                 startActivity(signUpIntent);
             }
         });
@@ -146,6 +160,10 @@ public class SignInActivity extends AppCompatActivity {
                                     setResult(RESULT_OK, null);
                                     startActivity(HomeActivity);
                                     SignInActivity.this.finish();
+
+                                    OneSignal.sendTag("email", email);
+                                    OneSignal.setExternalUserId(user.getUid());
+
 
                                 } else {
                                     sendVerifyMailAgainButton.setVisibility(View.VISIBLE);

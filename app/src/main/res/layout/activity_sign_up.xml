@@ -49,6 +49,17 @@
         android:inputType="textPassword"
         tools:targetApi="o" />
 
+    <TextView
+        android:id="@+id/lnkTermsAndConditions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:paddingTop="15dp"
+        android:text="Our Terms and Conditions for the usage of the App"
+        android:textColor="#3F51B5"
+        android:textSize="14sp"
+        android:textStyle="bold" />
+
     <CheckBox
         android:id="@+id/agreementCheckbox"
         android:layout_width="match_parent"
@@ -64,8 +75,7 @@
     <TextView
         android:id="@+id/signUpErrorView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/error_view" />
+        android:layout_height="wrap_content" />
 
 
 </LinearLayout>

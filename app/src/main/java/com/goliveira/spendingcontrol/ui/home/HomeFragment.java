@@ -1,6 +1,7 @@
 package com.goliveira.spendingcontrol.ui.home;
 
 import android.annotation.SuppressLint;
+import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -22,7 +23,10 @@ import com.goliveira.spendingcontrol.ui.dialogs.MonthYearPickerDialog;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+
+import static android.content.Context.MODE_PRIVATE;
 
 public class HomeFragment extends Fragment {
 
@@ -55,6 +59,10 @@ public class HomeFragment extends Fragment {
             });
             pickerDialog.show(getFragmentManager(), "MonthYearPickerDialog");
         });
+
+        Date dateNow = Calendar.getInstance().getTime();
+        SimpleDateFormat sdf = new SimpleDateFormat("MMM yyyy");
+        txtMonthDate.setText(sdf.format(dateNow));
     }
 
     private String formatMonthYear(String str) {
@@ -77,11 +85,16 @@ public class HomeFragment extends Fragment {
 
         homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
         View root = inflater.inflate(R.layout.fragment_home, container, false);
+
         LoadFragmentViews(root);
+
         LoadFragmentButtonListeners();
 
+        homeViewModel.setSharedPreferences(getActivity().getSharedPreferences("BUDDY", MODE_PRIVATE));
         homeViewModel.DisplayFirebaseData(root, this);
+
         ConfigureDateTimePicker();
+
         return root;
     }
 }

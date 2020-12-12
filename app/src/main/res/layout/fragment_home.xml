@@ -9,7 +9,8 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:padding="8dp">
 
         <androidx.core.widget.NestedScrollView
             android:id="@+id/nestedScrollView"
@@ -167,13 +168,14 @@
                 <com.github.mikephil.charting.charts.PieChart
                     android:id="@+id/pieChartHome"
                     android:layout_width="match_parent"
-                    android:layout_height="280dp" >
+                    android:layout_height="280dp">
 
                 </com.github.mikephil.charting.charts.PieChart>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
+
                     <Button
                         android:id="@+id/btnAddExpense"
                         android:layout_width="wrap_content"
@@ -187,6 +189,7 @@
                         app:icon="@drawable/add_income_money"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
+
                     <Button
                         android:id="@+id/btnAddIncome"
                         android:layout_width="wrap_content"

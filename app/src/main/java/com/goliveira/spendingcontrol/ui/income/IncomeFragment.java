@@ -2,6 +2,7 @@ package com.goliveira.spendingcontrol.ui.income;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
@@ -28,6 +29,7 @@ import com.goliveira.spendingcontrol.R;
 import com.goliveira.spendingcontrol.model.Transaction;
 import com.goliveira.spendingcontrol.model.TransactionType;
 import com.goliveira.spendingcontrol.model.User;
+import com.goliveira.spendingcontrol.notification.PushNotificationAsync;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -40,6 +42,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+
+import static android.content.Context.MODE_PRIVATE;
 
 public class IncomeFragment extends Fragment {
 
@@ -82,10 +86,14 @@ public class IncomeFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
+
+
     public void setDateTimePicker(View root)
     {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
         incomeCalendar = Calendar.getInstance();
         incomeDate = root.findViewById(R.id.incomeCreatedAt);
+        incomeDate.setText(sdf.format(incomeCalendar.getTime()));
 
         DatePickerDialog.OnDateSetListener date = (view, year, monthOfYear, dayOfMonth) -> {
             incomeCalendar.set(Calendar.YEAR, year);
@@ -151,7 +159,10 @@ public class IncomeFragment extends Fragment {
                 income.setWallet(user.getUid());
             }
             income.setCategory(incomeCategory.getSelectedItem().toString());
+
             income.save();
+
+            TryToNotifyBuddy(income);
 
             Navigation.findNavController(view).popBackStack(); //goes to the previous fragment
         });
@@ -164,6 +175,26 @@ public class IncomeFragment extends Fragment {
         setDateTimePicker(root);
 
         return root;
+    }
+
+    public void TryToNotifyBuddy(Transaction transaction){
+        String BUDDY_ID = "";
+
+        SharedPreferences preferences = getActivity().getSharedPreferences("BUDDY", MODE_PRIVATE);
+        if(preferences.contains("BUDDY_ID"))
+        {
+            BUDDY_ID = preferences.getString("BUDDY_ID", "");
+        }
+
+        if(TextUtils.isEmpty(BUDDY_ID) == false) {
+            // Set up a new instance of our runnable object that will be run on the background thread
+            PushNotificationAsync pushNotificationAsync = new PushNotificationAsync(BUDDY_ID, transaction.getMessageForBuddyNotification());
+
+            // Set up the thread that will use our runnable object
+            Thread thread = new Thread(pushNotificationAsync);
+
+            thread.start();
+        }
     }
 
     public boolean checkIsEmpty (TextView textView) {

@@ -1,6 +1,7 @@
 package com.goliveira.spendingcontrol.ui.expense;
 
 import android.app.DatePickerDialog;
+import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -26,6 +27,7 @@ import com.goliveira.spendingcontrol.R;
 import com.goliveira.spendingcontrol.model.Transaction;
 import com.goliveira.spendingcontrol.model.TransactionType;
 import com.goliveira.spendingcontrol.model.User;
+import com.goliveira.spendingcontrol.notification.PushNotificationAsync;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -39,11 +41,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link ExpenseFragment} factory method to
- * create an instance of this fragment.
- */
+import static android.content.Context.MODE_PRIVATE;
+
 public class ExpenseFragment extends Fragment {
 
     private Calendar expenseCalendar;
@@ -75,20 +74,22 @@ public class ExpenseFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Log.i(TAG,"Back Button Pressed");
+        Log.i(TAG, "Back Button Pressed");
         switch (item.getItemId()) {
             case android.R.id.home:
-                Log.i(TAG,"home on back pressed");
+                Log.i(TAG, "home on back pressed");
                 getActivity().onBackPressed();
                 return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    public void setDateTimePicker(View root)
-    {
+    public void setDateTimePicker(View root) {
         expenseCalendar = Calendar.getInstance();
         expenseDate = root.findViewById(R.id.expenseCreatedAt);
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+        expenseDate.setText(sdf.format(expenseCalendar.getTime()));
 
         DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
             @Override
@@ -121,10 +122,11 @@ public class ExpenseFragment extends Fragment {
                 ArrayAdapter<String> adapterExpenseWallet = new ArrayAdapter<>(root.getContext(), android.R.layout.simple_spinner_item, arraySpinner);
                 adapterExpenseWallet.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 expenseWallet.setAdapter(adapterExpenseWallet);
-                if(user.isHasBuddy()){
+                if (user.isHasBuddy()) {
                     expenseWallet.setVisibility(View.VISIBLE);
                 }
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Log.d(TAG, "Error fetching database");
@@ -139,7 +141,7 @@ public class ExpenseFragment extends Fragment {
             Spinner expenseCategory = root.findViewById(R.id.expenseCategory);
             Spinner expenseWallet = root.findViewById(R.id.expenseWallet);
             // validate fields
-            if(checkIsEmpty(expenseAmount) || checkIsEmpty(expenseDate) || checkSelect(expenseCategory) || checkIsEmpty(expenseDescription)){
+            if (checkIsEmpty(expenseAmount) || checkIsEmpty(expenseDate) || checkSelect(expenseCategory) || checkIsEmpty(expenseDescription)) {
                 return;
             }
             Transaction expense = new Transaction();
@@ -153,13 +155,18 @@ public class ExpenseFragment extends Fragment {
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-            if(user.isHasBuddy() && TextUtils.equals(expenseWallet.getSelectedItem().toString(), user.getBuddyName())){
+            if (user.isHasBuddy() && TextUtils.equals(expenseWallet.getSelectedItem().toString(), user.getBuddyName())) {
                 expense.setWallet(user.getBuddy());
             } else {
                 expense.setWallet(user.getUid());
             }
+
             expense.setCategory(expenseCategory.getSelectedItem().toString());
+
             expense.save();
+
+            TryToNotifyBuddy(expense);
+
             Navigation.findNavController(view).popBackStack(); //goes to the previous fragment
         });
 
@@ -173,8 +180,27 @@ public class ExpenseFragment extends Fragment {
         return root;
     }
 
-    public boolean checkIsEmpty (TextView textView) {
-        if(TextUtils.isEmpty(textView.getText().toString())){
+    public void TryToNotifyBuddy(Transaction transaction) {
+        String BUDDY_ID = "";
+
+        SharedPreferences preferences = getActivity().getSharedPreferences("BUDDY", MODE_PRIVATE);
+        if (preferences.contains("BUDDY_ID")) {
+            BUDDY_ID = preferences.getString("BUDDY_ID", "");
+        }
+
+        if (TextUtils.isEmpty(BUDDY_ID) == false) {
+            // Set up a new instance of our runnable object that will be run on the background thread
+            PushNotificationAsync pushNotificationAsync = new PushNotificationAsync(BUDDY_ID, transaction.getMessageForBuddyNotification());
+
+            // Set up the thread that will use our runnable object
+            Thread thread = new Thread(pushNotificationAsync);
+
+            thread.start();
+        }
+    }
+
+    public boolean checkIsEmpty(TextView textView) {
+        if (TextUtils.isEmpty(textView.getText().toString())) {
             textView.setError("Required field");
             return true;
         } else {
@@ -182,8 +208,8 @@ public class ExpenseFragment extends Fragment {
         }
     }
 
-    public boolean checkSelect (Spinner spinner){
-        if(TextUtils.equals(spinner.getSelectedItem().toString(), "-- Select category --")) {
+    public boolean checkSelect(Spinner spinner) {
+        if (TextUtils.equals(spinner.getSelectedItem().toString(), "-- Select category --")) {
             Toast.makeText(ExpenseFragment.this.getContext(), "Category field is required", Toast.LENGTH_SHORT).show();
             return true;
         } else {
@@ -192,7 +218,7 @@ public class ExpenseFragment extends Fragment {
     }
 
 
-    public int GetInt(String s){
+    public int GetInt(String s) {
         return Integer.parseInt(s.replaceAll("[\\D]", ""));
     }
 }
