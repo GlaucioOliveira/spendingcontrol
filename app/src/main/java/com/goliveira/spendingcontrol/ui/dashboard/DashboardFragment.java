@@ -46,7 +46,7 @@ public class DashboardFragment extends Fragment {
         transactionsList.setHasFixedSize(true);
 
         DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference().child("users").child(currentUserUid).child("transactions");
-        dbRef.addChildEventListener(new ChildEventListener() {
+        dbRef.orderByChild("dateUnix").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                 Transaction transaction =  snapshot.getValue(Transaction.class);
