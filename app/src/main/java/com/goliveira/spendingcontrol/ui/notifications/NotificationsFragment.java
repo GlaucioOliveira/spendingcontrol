@@ -81,6 +81,11 @@ public class NotificationsFragment extends Fragment {
             return false;
         }
 
+        if (editTextTextEmailAddress.getText().toString().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+            ToastError("Your Buddy Id can't be your User Id.");
+            return false;
+        }
+
         return true;
     }
 
@@ -113,7 +118,7 @@ public class NotificationsFragment extends Fragment {
 
     }
 
-    private void ShowUserId(){
+    private void ShowUserId() {
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
@@ -160,18 +165,44 @@ public class NotificationsFragment extends Fragment {
         });
     }
 
-    private void isUserIdValid(String userId){
+    private void updateBuddyInformation(String buddyId) {
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                User userObject = dataSnapshot.getValue(User.class);
+
+                String buddyId = editTextTextEmailAddress.getText().toString();
+
+                userObject.setBuddy(buddyId);
+
+                userRef.setValue(userObject);
+
+                ToastError("Buddy Id saved!");
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.d(TAG, "Error fetching database");
+            }
+        });
+
+    }
+
+    private void isUserIdValid(String userId) {
         DatabaseReference validUserRef = FirebaseDatabase.getInstance().getReference().child("users").child(userId);
 
         validUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot == null || dataSnapshot.getValue() == null)
-                {
+                if (dataSnapshot == null || dataSnapshot.getValue() == null) {
                     ToastError("The Buddy Id typed is invalid. Try another one.");
-                }
-                else{
-                    ToastError("The Buddy Id is correct!");
+                } else {
+                    String buddyId = editTextTextEmailAddress.getText().toString();
+
+                    updateBuddyInformation(buddyId);
                 }
             }
 
@@ -180,6 +211,8 @@ public class NotificationsFragment extends Fragment {
                 Log.d(TAG, "Error fetching database");
             }
         });
+
+
     }
 
 }
