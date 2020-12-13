@@ -77,12 +77,7 @@ public class NotificationsFragment extends Fragment {
     private boolean ValidateActivity() {
 
         if (TextUtils.isEmpty(editTextTextEmailAddress.getText().toString())) {
-            ToastError("Email can't be empty");
-            return false;
-        }
-
-        if (android.util.Patterns.EMAIL_ADDRESS.matcher(editTextTextEmailAddress.getText().toString()).matches() == false) {
-            ToastError("The Email typed is invalid!");
+            ToastError("Buddy Id can't be empty");
             return false;
         }
 
@@ -102,8 +97,9 @@ public class NotificationsFragment extends Fragment {
             public void onClick(View view) {
 
                 if (ValidateActivity() == false) return;
+                String buddyId = editTextTextEmailAddress.getText().toString();
 
-                String email = editTextTextEmailAddress.getText().toString();
+                isUserIdValid(buddyId);
             }
         });
 
@@ -121,10 +117,10 @@ public class NotificationsFragment extends Fragment {
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
-        alertDialogBuilder.setTitle("Reset Password");
+        alertDialogBuilder.setTitle("Current User ID");
 
         alertDialogBuilder
-                .setMessage("Your User ID is: " + userId + "\nShare it with a buddy to let him know about your transactions.")
+                .setMessage("Your User ID is: " + userId + "\n\nShare it with a Buddy to let him know about your transactions.")
                 .setCancelable(false)
                 .setPositiveButton("Copy User Id", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
@@ -163,4 +159,27 @@ public class NotificationsFragment extends Fragment {
             }
         });
     }
+
+    private void isUserIdValid(String userId){
+        DatabaseReference validUserRef = FirebaseDatabase.getInstance().getReference().child("users").child(userId);
+
+        validUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot == null || dataSnapshot.getValue() == null)
+                {
+                    ToastError("The Buddy Id typed is invalid. Try another one.");
+                }
+                else{
+                    ToastError("The Buddy Id is correct!");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.d(TAG, "Error fetching database");
+            }
+        });
+    }
+
 }

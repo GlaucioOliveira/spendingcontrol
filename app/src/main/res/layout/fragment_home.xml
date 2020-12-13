@@ -168,7 +168,7 @@
                 <com.github.mikephil.charting.charts.PieChart
                     android:id="@+id/pieChartHome"
                     android:layout_width="match_parent"
-                    android:layout_height="280dp">
+                    android:layout_height="280dp" android:contentDescription="">
 
                 </com.github.mikephil.charting.charts.PieChart>
 

@@ -32,12 +32,6 @@ public class WelcomeActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
-        signUpButton = findViewById(R.id.welcomeSignUpButton);
-        signInButton = findViewById(R.id.welcomeSignInButton);
-
-        signInButton.setVisibility(INVISIBLE);
-        signUpButton.setVisibility(INVISIBLE);
-
         if (mAuth.getCurrentUser() != null) {
             mAuth.getCurrentUser().reload().addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
@@ -52,26 +46,10 @@ public class WelcomeActivity extends AppCompatActivity {
                 }
             });
         } else {
-            signInButton.setVisibility(VISIBLE);
-            signUpButton.setVisibility(VISIBLE);
-            Log.d("AUTH-FIREBASE", "user not available");
+            Intent SignInActivity = new Intent(WelcomeActivity.this, SignInActivity.class);
+            startActivity(SignInActivity);
+            WelcomeActivity.this.finish();
         }
-
-        signUpButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent signUpIntent = new Intent(WelcomeActivity.this, SignUpActivity.class);
-                startActivity(signUpIntent);
-            }
-        });
-
-        signInButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent signInIntent = new Intent(WelcomeActivity.this, SignInActivity.class);
-                startActivityForResult(signInIntent, REQUEST_EXIT);
-            }
-        });
     }
 
 
@@ -84,5 +62,4 @@ public class WelcomeActivity extends AppCompatActivity {
             }
         }
     }
-
 }

@@ -77,6 +77,11 @@ public class SignUpActivity extends AppCompatActivity {
             return false;
         }
 
+        if (android.util.Patterns.EMAIL_ADDRESS.matcher(signUpEmailTextInput.getText().toString()).matches() == false) {
+            ToastError("The Email typed is invalid!");
+            return false;
+        }
+
         if (signUpPasswordTextInput.getText().toString().contentEquals("")) {
             ToastError("Password can't be empty");
             return false;

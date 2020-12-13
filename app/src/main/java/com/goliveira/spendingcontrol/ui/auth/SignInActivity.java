@@ -60,18 +60,17 @@ public class SignInActivity extends AppCompatActivity {
         }
     }
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        LGSnackbarManager.prepare(getApplicationContext(),
-                LGSnackBarThemeManager.LGSnackbarThemeName.SHINE);
-
-        setContentView(R.layout.activity_sign_in);
-
         mAuth = FirebaseAuth.getInstance();
 
         TryToSignInSavedUser();
+
+        setContentView(R.layout.activity_sign_in);
 
         LoadFragmentViews();
 
@@ -130,6 +129,11 @@ public class SignInActivity extends AppCompatActivity {
     private boolean ValidateActivity() {
         if (emailTextInput.getText().toString().contentEquals("")) {
             ToastError("Email can't be empty");
+            return false;
+        }
+
+        if (android.util.Patterns.EMAIL_ADDRESS.matcher(emailTextInput.getText().toString()).matches() == false) {
+            ToastError("The Email typed is invalid!");
             return false;
         }
 

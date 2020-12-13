@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModel;
 
 import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
@@ -60,7 +61,7 @@ public class HomeViewModel extends ViewModel {
                 todayIncomeValue.setText("$ " + totalIncome);
 
                 TextView balanceValue = root.findViewById(R.id.txtAccountBalanceValue);
-                balanceValue.setText("$ " +(totalIncome - totalExpense));
+                balanceValue.setText("$ " + Math.abs(totalIncome - totalExpense));
 
                 DrawChart(root, fragment, totalIncome, totalExpense);
             }
@@ -127,6 +128,10 @@ public class HomeViewModel extends ViewModel {
 
         pieDataSet.setColors(ConfigurePieChartColors(fragment));
         PieData pieData = new PieData(pieDataSet);
+
+        Description pieDescription = new Description();
+        pieDescription.setText("");
+        pieChartHome.setDescription(pieDescription);
 
         pieChartHome.setData(pieData);
         pieChartHome.invalidate();
