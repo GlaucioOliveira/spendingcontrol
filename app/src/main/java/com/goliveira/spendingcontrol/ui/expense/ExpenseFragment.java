@@ -151,7 +151,7 @@ public class ExpenseFragment extends Fragment {
             expense.setDate(expenseDate.getText().toString());
             try {
                 Date dateUnix = new SimpleDateFormat("dd-MM-yyyy").parse(expenseDate.getText().toString());
-                expense.setDateUnix(dateUnix.getTime());
+                expense.setDateUnix(-1*dateUnix.getTime()); // inverted timestamp because firebase doesn't order desc
             } catch (ParseException e) {
                 e.printStackTrace();
             }

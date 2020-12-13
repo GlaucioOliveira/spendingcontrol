@@ -149,7 +149,7 @@ public class IncomeFragment extends Fragment {
             income.setDate(incomeDate.getText().toString());
             try {
                 Date dateUnix = new SimpleDateFormat("dd-MM-yyyy").parse(incomeDate.getText().toString());
-                income.setDateUnix(dateUnix.getTime());
+                income.setDateUnix(-1*dateUnix.getTime()); // inverted timestamp because firebase doesn't order desc
             } catch (ParseException e) {
                 e.printStackTrace();
             }
